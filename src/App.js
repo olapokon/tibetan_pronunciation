@@ -4,9 +4,11 @@ import {
   prefixes,
   roots,
   suffixes,
-  subscripts
+  subscriptsTable
 } from "./tibetanUnicodeData";
 import "./App.css";
+
+// manual of standard tibetan p 44 -
 
 function App() {
   const [stateValues, setStateValues] = useState({
@@ -15,6 +17,7 @@ function App() {
     prefix: "",
     suffix: "",
     subscript: "",
+    availableSubscripts: [],
     availableAffixes: []
   });
 
@@ -22,7 +25,7 @@ function App() {
     const { name, value } = event.target;
     setStateValues({ ...stateValues, [name]: value });
     if (name === "root") {
-      setStateValues({ availableAffixes: [] });
+      setStateValues({ ...stateValues, availableAffixes: [] });
       handleRootChange(value);
     }
   }
@@ -34,7 +37,15 @@ function App() {
     to specific roots */
     if (roots.indexOf(value) && roots.indexOf(value) > 15) {
       setStateValues({
+        ...stateValues,
         availableAffixes: ["superscript", "prefix"]
+      });
+    }
+    if (subscriptsTable[value]) {
+      setStateValues({
+        ...stateValues,
+        availableAffixes: [...stateValues.availableAffixes, "subscript"],
+        availableSubscripts: [...subscriptsTable[value]]
       });
     }
   }
@@ -66,16 +77,17 @@ function App() {
       <strong>Root syllable </strong>
       <select name="root" value={stateValues.root} onChange={handleChange}>
         <option></option>
-        {roots.map((root, index) => (
-          <option key={index}>{root}</option>
+        {roots.map((rootSyllable, index) => (
+          <option key={index}>{rootSyllable}</option>
         ))}
       </select>
       <strong>Suffix </strong>
       <select name="suffix" value={stateValues.suffix} onChange={handleChange}>
         <option></option>
-        {suffixes.map((suffix, index) => (
-          <option key={index}>{suffix}</option>
-        ))}
+        {stateValues.root &&
+          suffixes.map((suffix, index) => (
+            <option key={index}>{suffix}</option>
+          ))}
       </select>
       <br></br>
       <strong>Subscript </strong>
@@ -85,9 +97,10 @@ function App() {
         onChange={handleChange}
       >
         <option></option>
-        {subscripts.map((subscript, index) => (
-          <option key={index}>{subscript}</option>
-        ))}
+        {stateValues.availableAffixes.includes("subscript") &&
+          stateValues.availableSubscripts.map((subscript, index) => (
+            <option key={index}>{subscript}</option>
+          ))}
       </select>
     </div>
   );
