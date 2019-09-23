@@ -4,7 +4,10 @@ import {
   prefixes,
   roots,
   suffixes,
-  subscriptsTable
+  secondSuffixes,
+  subscriptsTable,
+  subscriptsDisplayTable,
+  superscribedRootsTable
 } from "./tibetanUnicodeData";
 import "./App.css";
 
@@ -18,51 +21,77 @@ class App extends Component {
       superscript: "",
       prefix: "",
       suffix: "",
+      secondSuffix: "",
       subscript: "",
-      availableSubscripts: [],
-      availableAffixes: []
+      availableSubscripts: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleRootChange = this.handleRootChange.bind(this);
+    this.createRootDisplay = this.createRootDisplay.bind(this);
   }
 
   handleChange(event) {
     const { name, value } = event.target;
     if (name === "root") {
       this.setState({
-        [name]: value,
-        availableAffixes: ["suffix"]
+        [name]: value
       });
       this.handleRootChange(value);
+    } else if (name === "suffix") {
+      this.setState({ secondSuffix: "", [name]: value });
+    } else if (name === "superscript") {
+      // the la subscript cannot be displayed if there is a superscript
+      const prunedSubscripts = [...this.state.availableSubscripts];
+      if (prunedSubscripts.includes("\u0F63")) {
+        prunedSubscripts.splice(prunedSubscripts.indexOf("\u0F63"), 1);
+      }
+      this.setState({ [name]: value, availableSubscripts: prunedSubscripts });
     } else {
       this.setState({ [name]: value });
     }
   }
 
   handleRootChange(value) {
-    /* make superscripts and prefixes available if the root belongs to the third or 
-    fourth column of the alphabet table, index 16 to the end of the array */
-    /* suffixes are available for all roots, specific subscripts are available
+    /* prefixes, superscripts, and suffixes are available for all roots, specific subscripts are available
     to specific roots */
-    const affixes = ["suffix"];
-    if (roots.indexOf(value) > 15) {
-      affixes.push("prefix");
-      affixes.push("superscript");
-    }
+
+    // reset the affixes in state
+    this.setState({
+      superscript: "",
+      prefix: "",
+      suffix: "",
+      secondSuffix: "",
+      subscript: "",
+      availableSubscripts: []
+    });
+
     if (subscriptsTable[value]) {
-      affixes.push("subscript");
       this.setState({
         availableSubscripts: [...subscriptsTable[value]]
       });
     }
-    this.setState({ availableAffixes: affixes });
-    console.log(affixes);
+  }
+
+  createRootDisplay() {
+    let rootDisplay = "";
+    if (this.state.superscript) {
+      rootDisplay =
+        this.state.superscript + superscribedRootsTable[this.state.root];
+    } else {
+      rootDisplay = this.state.root;
+    }
+    if (this.state.subscript) {
+      rootDisplay += subscriptsDisplayTable[this.state.subscript];
+    }
+    return `${this.state.prefix}${rootDisplay}${this.state.suffix}${this.state.secondSuffix}`;
   }
 
   render() {
     return (
       <div className="App">
         {/* {"\u0F66\u0FA8\u0FB2"} */}
+        <div>{this.createRootDisplay()}</div>
+        <br></br>
         <strong>Superscript </strong>
         <select
           name="superscript"
@@ -70,7 +99,7 @@ class App extends Component {
           onChange={this.handleChange}
         >
           <option></option>
-          {this.state.availableAffixes.includes("superscript") &&
+          {this.state.root &&
             superscripts.map((superscript, index) => (
               <option key={index}>{superscript}</option>
             ))}
@@ -79,7 +108,7 @@ class App extends Component {
         <strong>Prefix </strong>
         <select name="prefix" value={this.prefix} onChange={this.handleChange}>
           <option></option>
-          {this.state.availableAffixes.includes("prefix") &&
+          {this.state.root &&
             prefixes.map((prefix, index) => (
               <option key={index}>{prefix}</option>
             ))}
@@ -95,15 +124,26 @@ class App extends Component {
             <option key={index}>{rootSyllable}</option>
           ))}
         </select>
-        <strong>Suffix </strong>
+        <strong>Suffixes </strong>
         <select
           name="suffix"
           value={this.state.suffix}
           onChange={this.handleChange}
         >
           <option></option>
-          {this.state.availableAffixes.includes("suffix") &&
+          {this.state.root &&
             suffixes.map((suffix, index) => (
+              <option key={index}>{suffix}</option>
+            ))}
+        </select>
+        <select
+          name="secondSuffix"
+          value={this.state.secondSuffix}
+          onChange={this.handleChange}
+        >
+          <option></option>
+          {this.state.suffix &&
+            secondSuffixes.map((suffix, index) => (
               <option key={index}>{suffix}</option>
             ))}
         </select>
@@ -115,7 +155,7 @@ class App extends Component {
           onChange={this.handleChange}
         >
           <option></option>
-          {this.state.availableAffixes.includes("subscript") &&
+          {this.state.root &&
             this.state.availableSubscripts.map((subscript, index) => (
               <option key={index}>{subscript}</option>
             ))}

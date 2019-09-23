@@ -44,6 +44,42 @@ export const suffixes = [
   "\u0F63",
   "\u0F66"
 ];
+
+export const secondSuffixes = ["\u0F51", "\u0F66"];
+
+export const superscribedRootsTable = {
+  ཀ: "\u0F90",
+  ཅ: "\u0F95",
+  ཏ: "\u0F9F",
+  པ: "\u0FA4",
+  ཙ: "\u0FA9",
+  ཞ: "\u0FAE",
+  ར: "\u0FB2", // to ra mallon den paei root me superscript
+  ཧ: "\u0FB7",
+  ཁ: "\u0F91",
+  ཆ: "\u0F96",
+  ཐ: "\u0FA0",
+  ཕ: "\u0FA5",
+  ཚ: "\u0FAA",
+  ཟ: "\u0FAF",
+  ལ: "\u0FB3",
+  ཨ: "\u0FB8",
+  ག: "\u0F92",
+  ཇ: "\u0F97",
+  ད: "\u0FA1",
+  བ: "\u0FA6",
+  ཛ: "\u0FAB",
+  འ: "\u0FB0",
+  ཤ: "\u0FB4",
+  ང: "\u0F94",
+  ཉ: "\u0F99",
+  ན: "\u0FA3",
+  མ: "\u0FA8",
+  ཝ: "\u0FAD", // to wa mallon den paei root me superscript
+  ཡ: "\u0FB1", // to ya mallon den paei root me superscript
+  ས: "\u0FB6"
+};
+
 export const subscriptsTable = {
   ཀ: ["\u0F61", "\u0F62", "\u0F63"],
   ཁ: ["\u0F61", "\u0F62"],
@@ -61,3 +97,5 @@ export const subscriptsTable = {
   ཟ: ["\u0F63"],
   ཧ: ["\u0F62"]
 };
+
+export const subscriptsDisplayTable = { ཡ: "\u0FB1", ར: "\u0FB2", ལ: "\u0FB3" };
