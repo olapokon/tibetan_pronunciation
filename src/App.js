@@ -106,7 +106,11 @@ class App extends Component {
         </select>
         <br></br>
         <strong>Prefix </strong>
-        <select name="prefix" value={this.prefix} onChange={this.handleChange}>
+        <select
+          name="prefix"
+          value={this.state.prefix}
+          onChange={this.handleChange}
+        >
           <option></option>
           {this.state.root &&
             prefixes.map((prefix, index) => (
