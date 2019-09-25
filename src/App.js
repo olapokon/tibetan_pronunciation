@@ -41,11 +41,20 @@ class App extends Component {
       this.setState({ secondSuffix: "", [name]: value });
     } else if (name === "superscript") {
       // the la subscript cannot be displayed if there is a superscript
-      const prunedSubscripts = [...this.state.availableSubscripts];
-      if (prunedSubscripts.includes("\u0F63")) {
-        prunedSubscripts.splice(prunedSubscripts.indexOf("\u0F63"), 1);
+      // remove la from the subscripts menu if a superscript is selected
+      if (value) {
+        const prunedSubscripts = [...this.state.availableSubscripts];
+        if (prunedSubscripts.includes("\u0F63")) {
+          prunedSubscripts.splice(prunedSubscripts.indexOf("\u0F63"), 1);
+        }
+        this.setState({ [name]: value, availableSubscripts: prunedSubscripts });
+      } else {
+        // if the superscript is deselected, load all subscripts for the current root
+        this.setState({
+          availableSubscripts: [...subscriptsTable[this.state.root]],
+          [name]: value
+        });
       }
-      this.setState({ [name]: value, availableSubscripts: prunedSubscripts });
     } else {
       this.setState({ [name]: value });
     }
