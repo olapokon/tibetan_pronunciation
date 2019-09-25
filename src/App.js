@@ -3,6 +3,7 @@ import {
   superscripts,
   prefixes,
   roots,
+  modifiedThirdColumn,
   suffixes,
   secondSuffixes,
   subscriptsTable,
@@ -10,6 +11,7 @@ import {
   superscribedRootsTable
 } from "./tibetanUnicodeData";
 import "./App.css";
+import { throwStatement } from "@babel/types";
 
 // manual of standard tibetan p 44 -
 
@@ -28,6 +30,9 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleRootChange = this.handleRootChange.bind(this);
     this.createRootDisplay = this.createRootDisplay.bind(this);
+    this.createTransliterationDisplay = this.createTransliterationDisplay.bind(
+      this
+    );
   }
 
   handleChange(event) {
@@ -41,13 +46,17 @@ class App extends Component {
       this.setState({ secondSuffix: "", [name]: value });
     } else if (name === "superscript") {
       // the la subscript cannot be displayed if there is a superscript
-      // remove la from the subscripts menu if a superscript is selected
+      // remove la from the subscripts menu if a superscript is selected and clear current subscript
       if (value) {
         const prunedSubscripts = [...this.state.availableSubscripts];
         if (prunedSubscripts.includes("\u0F63")) {
           prunedSubscripts.splice(prunedSubscripts.indexOf("\u0F63"), 1);
         }
-        this.setState({ [name]: value, availableSubscripts: prunedSubscripts });
+        this.setState({
+          [name]: value,
+          availableSubscripts: prunedSubscripts,
+          subscript: ""
+        });
       } else {
         // if the superscript is deselected, load all subscripts for the current root
         this.setState({
@@ -95,11 +104,62 @@ class App extends Component {
     return `${this.state.prefix}${rootDisplay}${this.state.suffix}${this.state.secondSuffix}`;
   }
 
+  createTransliterationDisplay() {
+    const rootsArray = Object.keys(roots);
+    let transliterationDisplay = roots[this.state.root];
+
+    // determine if the root belongs to the third or fourth column
+    let rootColumn = "";
+    if (
+      rootsArray.indexOf(this.state.root) > 15 &&
+      rootsArray.indexOf(this.state.root) < 21
+    ) {
+      rootColumn = "third";
+    } else if (
+      rootsArray.indexOf(this.state.root) > 24 &&
+      rootsArray.indexOf(this.state.root) < 29
+    ) {
+      rootColumn = "fourth";
+    }
+
+    if (this.state.prefix || this.state.superscript) {
+      if (rootColumn === "third") {
+        transliterationDisplay = modifiedThirdColumn[this.state.root];
+      }
+    }
+
+    // add the suffix, using the modified version
+    // if the root belongs to the fourth column and there is a prefix or subscript
+    if (this.state.suffix) {
+      if (this.state.prefix || this.state.superscript) {
+        if (rootColumn === "fourth") {
+          transliterationDisplay += suffixes[this.state.suffix][1];
+        }
+      } else {
+        transliterationDisplay += suffixes[this.state.suffix][0];
+      }
+    } else if (this.state.prefix || this.state.superscript) {
+      if (rootColumn === "fourth") {
+        transliterationDisplay += "\u0301";
+      }
+    }
+
+    return transliterationDisplay;
+  }
+
   render() {
     return (
       <div className="App">
-        {/* {"\u0F66\u0FA8\u0FB2"} */}
-        <div>{this.createRootDisplay()}</div>
+        {/* 
+        diairesis: \u0308
+        high tone: \u0301
+        low tone: \u0300
+        */}
+        <div id="display">{this.createRootDisplay()}</div>
+        <br></br>
+        <div id="transliterationDisplay">
+          {this.createTransliterationDisplay()}
+        </div>
         <br></br>
         <strong>Superscript </strong>
         <select
@@ -133,7 +193,7 @@ class App extends Component {
           onChange={this.handleChange}
         >
           <option></option>
-          {roots.map((rootSyllable, index) => (
+          {Object.keys(roots).map((rootSyllable, index) => (
             <option key={index}>{rootSyllable}</option>
           ))}
         </select>
@@ -145,7 +205,7 @@ class App extends Component {
         >
           <option></option>
           {this.state.root &&
-            suffixes.map((suffix, index) => (
+            Object.keys(suffixes).map((suffix, index) => (
               <option key={index}>{suffix}</option>
             ))}
         </select>
