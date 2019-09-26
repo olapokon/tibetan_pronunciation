@@ -106,7 +106,9 @@ class App extends Component {
     if (this.state.subscript) {
       rootDisplay += subscriptsDisplayTable[this.state.subscript];
     }
-    return `${this.state.prefix}${rootDisplay}${this.state.suffix}${this.state.secondSuffix}`;
+    return this.state.root
+      ? `${this.state.prefix}${rootDisplay}${this.state.suffix}${this.state.secondSuffix}`
+      : "\u0F00";
   }
 
   createTranscriptionDisplay() {
