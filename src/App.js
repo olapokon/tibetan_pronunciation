@@ -11,7 +11,6 @@ import {
   superscribedRootsTable
 } from "./tibetanUnicodeData";
 import "./App.css";
-import { throwStatement } from "@babel/types";
 
 // manual of standard tibetan p 44 -
 
@@ -30,7 +29,7 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleRootChange = this.handleRootChange.bind(this);
     this.createRootDisplay = this.createRootDisplay.bind(this);
-    this.createTransliterationDisplay = this.createTransliterationDisplay.bind(
+    this.createTranscriptionDisplay = this.createTranscriptionDisplay.bind(
       this
     );
   }
@@ -104,9 +103,12 @@ class App extends Component {
     return `${this.state.prefix}${rootDisplay}${this.state.suffix}${this.state.secondSuffix}`;
   }
 
-  createTransliterationDisplay() {
+  createTranscriptionDisplay() {
     const rootsArray = Object.keys(roots);
-    let transliterationDisplay = roots[this.state.root];
+    let currentRoot = roots[this.state.root] ? roots[this.state.root] : "";
+    let tone = "";
+    let diairesis = false;
+    let suffix = "";
 
     // determine if the root belongs to the third or fourth column
     let rootColumn = "";
@@ -122,27 +124,68 @@ class App extends Component {
       rootColumn = "fourth";
     }
 
+    // determine if there is change in the root, based on a prefix, superscript, or subscript
+    // the root change of the subscript overrides the root change for a third column root with prefix
     if (this.state.prefix || this.state.superscript) {
       if (rootColumn === "third") {
-        transliterationDisplay = modifiedThirdColumn[this.state.root];
+        currentRoot = modifiedThirdColumn[this.state.root];
+      } else if (rootColumn === "fourth") {
+        tone = "high";
       }
     }
 
-    // add the suffix, using the modified version
-    // if the root belongs to the fourth column and there is a prefix or subscript
-    if (this.state.suffix) {
-      if (this.state.prefix || this.state.superscript) {
-        if (rootColumn === "fourth") {
-          transliterationDisplay += suffixes[this.state.suffix][1];
+    if (this.state.subscript) {
+      // ra subscript
+      if (this.state.subscript === "\u0F62") {
+        if (this.state.root !== "\u0F58" && this.state.root !== "\u0F66") {
+          currentRoot = currentRoot.slice(0, -1) + "ra";
         }
-      } else {
-        transliterationDisplay += suffixes[this.state.suffix][0];
-      }
-    } else if (this.state.prefix || this.state.superscript) {
-      if (rootColumn === "fourth") {
-        transliterationDisplay += "\u0301";
+        // la subscript
+      } else if (this.state.subscript === "\u0F63") {
+        if (this.state.root === "\u0F5F") {
+          currentRoot = "da";
+          tone = "low";
+        } else {
+          currentRoot = "la";
+          tone = "high";
+        }
+        // ya subscript
+      } else if (this.state.subscript === "\u0F61") {
+        if (this.state.root === "\u0F58") {
+          currentRoot = "nya";
+          tone = "low";
+        } else if (this.state.root === "\u0F54") {
+          currentRoot = "ca";
+          tone = "high";
+        } else if (this.state.root === "\u0F55") {
+          currentRoot = "cha";
+          tone = "high";
+        } else if (this.state.root === "\u0F56") {
+          currentRoot = "cha";
+          tone = "low";
+        } else {
+          currentRoot = currentRoot.slice(0, -1) + "ya";
+        }
       }
     }
+
+    if (this.state.suffix) {
+      if (
+        this.state.suffix === "\u0F51" ||
+        this.state.suffix === "\u0F53" ||
+        this.state.suffix === "\u0F63" ||
+        this.state.suffix === "\u0F66"
+      ) {
+        diairesis = true;
+      }
+      suffix = suffixes[this.state.suffix];
+    }
+
+    let transliterationDisplay = currentRoot;
+    if (diairesis) transliterationDisplay += "\u0308";
+    if (tone === "high") transliterationDisplay += "\u0301";
+    if (tone === "low") transliterationDisplay += "\u0300";
+    transliterationDisplay += suffix;
 
     return transliterationDisplay;
   }
@@ -158,7 +201,7 @@ class App extends Component {
         <div id="display">{this.createRootDisplay()}</div>
         <br></br>
         <div id="transliterationDisplay">
-          {this.createTransliterationDisplay()}
+          {this.createTranscriptionDisplay()}
         </div>
         <br></br>
         <strong>Superscript </strong>
