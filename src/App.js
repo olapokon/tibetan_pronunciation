@@ -204,7 +204,7 @@ class App extends Component {
           {this.createTranscriptionDisplay()}
         </div>
         <br></br>
-        <strong>Superscript </strong>
+        Superscript
         <select
           name="superscript"
           value={this.state.superscript}
@@ -217,7 +217,7 @@ class App extends Component {
             ))}
         </select>
         <br></br>
-        <strong>Prefix </strong>
+        Prefix
         <select
           name="prefix"
           value={this.state.prefix}
@@ -229,7 +229,7 @@ class App extends Component {
               <option key={index}>{prefix}</option>
             ))}
         </select>
-        <strong>Root syllable </strong>
+        Root syllable
         <select
           name="root"
           value={this.state.root}
@@ -240,7 +240,7 @@ class App extends Component {
             <option key={index}>{rootSyllable}</option>
           ))}
         </select>
-        <strong>Suffixes </strong>
+        Suffixes
         <select
           name="suffix"
           value={this.state.suffix}
@@ -264,7 +264,7 @@ class App extends Component {
             ))}
         </select>
         <br></br>
-        <strong>Subscript </strong>
+        Subscript
         <select
           name="subscript"
           value={this.state.subscript}
