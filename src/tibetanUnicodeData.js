@@ -1,4 +1,5 @@
 export const superscripts = ["\u0F62", "\u0F63", "\u0F66"];
+
 export const prefixes = ["\u0F42", "\u0F51", "\u0F56", "\u0F58", "\u0F60"];
 
 export const roots = {
@@ -55,19 +56,6 @@ export const suffixes = {
   ས: ""
 };
 
-// export const suffixesA = {
-//   ག: ["k", "\u0301k"],
-//   ང: ["ng", "\u0301ng"],
-//   ད: ["\u0308", "\u0308\u0301"],
-//   ན: ["\u0308n", "\u0308\u0301n"],
-//   བ: ["p", "\u0301p"],
-//   མ: ["m", "\u0301m"],
-//   འ: ["", "\u0301"],
-//   ར: ["r", "\u0301r"],
-//   ལ: ["\u0308l", "\u0308\u0301l"],
-//   ས: ["\u0308", "\u0308\u0301"]
-// };
-
 export const secondSuffixes = ["\u0F51", "\u0F66"];
 
 export const superscribedRootsTable = {
@@ -77,7 +65,7 @@ export const superscribedRootsTable = {
   པ: "\u0FA4",
   ཙ: "\u0FA9",
   ཞ: "\u0FAE",
-  ར: "\u0FB2", // to ra mallon den paei root me superscript
+  ར: "\u0FB2",
   ཧ: "\u0FB7",
   ཁ: "\u0F91",
   ཆ: "\u0F96",
@@ -98,8 +86,8 @@ export const superscribedRootsTable = {
   ཉ: "\u0F99",
   ན: "\u0FA3",
   མ: "\u0FA8",
-  ཝ: "\u0FAD", // to wa mallon den paei root me superscript
-  ཡ: "\u0FB1", // to ya mallon den paei root me superscript
+  ཝ: "\u0FAD",
+  ཡ: "\u0FB1",
   ས: "\u0FB6"
 };
 

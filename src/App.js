@@ -58,10 +58,16 @@ class App extends Component {
         });
       } else {
         // if the superscript is deselected, load all subscripts for the current root
-        this.setState({
-          availableSubscripts: [...subscriptsTable[this.state.root]],
-          [name]: value
-        });
+        if (subscriptsTable[this.state.root]) {
+          this.setState({
+            availableSubscripts: [...subscriptsTable[this.state.root]],
+            [name]: value
+          });
+        } else {
+          this.setState({
+            [name]: value
+          });
+        }
       }
     } else {
       this.setState({ [name]: value });
@@ -198,12 +204,12 @@ class App extends Component {
         high tone: \u0301
         low tone: \u0300
         */}
-        <div id="display">{this.createRootDisplay()}</div>
-        <br></br>
-        <div id="transliterationDisplay">
-          {this.createTranscriptionDisplay()}
+        <div id="display">
+          <h1>{this.createRootDisplay()}</h1>
         </div>
-        <br></br>
+        <div id="transliterationDisplay">
+          <h2>{this.createTranscriptionDisplay()}</h2>
+        </div>
         Superscript
         <select
           name="superscript"
