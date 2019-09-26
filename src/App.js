@@ -143,9 +143,35 @@ class App extends Component {
     if (this.state.subscript) {
       // ra subscript
       if (this.state.subscript === "\u0F62") {
-        if (this.state.root !== "\u0F58" && this.state.root !== "\u0F66") {
-          currentRoot = currentRoot.slice(0, -1) + "ra";
+        if (
+          this.state.root === "\u0F40" ||
+          this.state.root === "\u0F4F" ||
+          this.state.root === "\u0F54"
+        ) {
+          currentRoot = "tra";
+          tone = "high";
+        } else if (
+          this.state.root === "\u0F41" ||
+          this.state.root === "\u0F50" ||
+          this.state.root === "\u0F55"
+        ) {
+          currentRoot = "thra";
+          tone = "high";
+        } else if (
+          this.state.root === "\u0F42" ||
+          this.state.root === "\u0F51" ||
+          this.state.root === "\u0F56"
+        ) {
+          if (this.state.superscript === "\u0F66") {
+            currentRoot = "dra";
+          } else {
+            currentRoot = "thra";
+          }
+          tone = "low";
+        } else if (this.state.root === "\u0F67") {
+          currentRoot = "hra";
         }
+
         // la subscript
       } else if (this.state.subscript === "\u0F63") {
         if (this.state.root === "\u0F5F") {
