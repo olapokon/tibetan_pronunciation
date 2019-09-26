@@ -208,7 +208,7 @@ class App extends Component {
           <h1>{this.createRootDisplay()}</h1>
         </div>
         <div id="transliterationDisplay">
-          <h2>{this.createTranscriptionDisplay()}</h2>
+          {this.createTranscriptionDisplay()}
         </div>
         Superscript
         <select
