@@ -306,41 +306,6 @@ class App extends Component {
               ))}
             </select>
           </div>
-          {/* <div className="option">
-            Suffix 1
-            <select
-              className={
-                this.state.root
-                  ? "option__select"
-                  : "option__select option__select--inactive"
-              }
-              name="suffix"
-              value={this.state.suffix}
-              onChange={this.handleChange}
-            >
-              <option></option>
-              {this.state.root &&
-                Object.keys(suffixes).map((suffix, index) => (
-                  <option key={index}>{suffix}</option>
-                ))}
-            </select>
-            <select
-              className={
-                this.state.suffix
-                  ? "option__select"
-                  : "option__select option__select--inactive"
-              }
-              name="secondSuffix"
-              value={this.state.secondSuffix}
-              onChange={this.handleChange}
-            >
-              <option>Suffix 2</option>
-              {this.state.suffix &&
-                secondSuffixes.map((suffix, index) => (
-                  <option key={index}>{suffix}</option>
-                ))}
-            </select>
-          </div> */}
 
           <div className="option">
             <div
@@ -401,7 +366,7 @@ class App extends Component {
           <div className="option">
             <div
               className={
-                this.state.root
+                this.state.availableSubscripts.length > 0
                   ? "option__text"
                   : "option__text option__text--inactive"
               }
@@ -410,7 +375,7 @@ class App extends Component {
             </div>
             <select
               className={
-                this.state.root
+                this.state.availableSubscripts.length > 0
                   ? "option__select"
                   : "option__select option__select--inactive"
               }

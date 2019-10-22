@@ -39,9 +39,6 @@ body {
   margin-bottom: 4rem;
 }
 
-.options {
-}
-
 .option {
   display: flex;
   justify-content: space-between;
@@ -51,13 +48,15 @@ body {
 .option__select {
   display: block;
   width: 16rem;
-  height: 6rem;
+  height: 4.5rem;
   margin-left: 0.5rem;
   padding: 1rem 2rem;
   appearance: none;
   background-color: #fff;
   border: 1px solid lightgray;
   font-size: 2rem;
+
+  text-align-last: center;
 }
 
 .option__select:hover {
