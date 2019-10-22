@@ -10,10 +10,8 @@ import {
   subscriptsDisplayTable,
   superscribedRootsTable
 } from "./tibetanUnicodeData";
-import "./App.css";
 
-// manual of standard tibetan p 44 -
-
+// manual of standard tibetan p 44
 class App extends Component {
   constructor() {
     super();
@@ -183,6 +181,7 @@ class App extends Component {
           currentRoot = "la";
           tone = "high";
         }
+
         // ya subscript
       } else if (this.state.subscript === "\u0F61") {
         if (this.state.root === "\u0F58") {
@@ -226,90 +225,207 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="container">
         {/* 
         diairesis: \u0308
         high tone: \u0301
         low tone: \u0300
         */}
-        <div id="display">
+        <div className="display--tibetan">
           <h1>{this.createRootDisplay()}</h1>
         </div>
-        <div id="transliterationDisplay">
+        <div className="display--transliteration">
           {this.createTranscriptionDisplay()}
         </div>
-        Superscript
-        <select
-          name="superscript"
-          value={this.state.superscript}
-          onChange={this.handleChange}
-        >
-          <option></option>
-          {this.state.root &&
-            superscripts.map((superscript, index) => (
-              <option key={index}>{superscript}</option>
-            ))}
-        </select>
-        <br></br>
-        Prefix
-        <select
-          name="prefix"
-          value={this.state.prefix}
-          onChange={this.handleChange}
-        >
-          <option></option>
-          {this.state.root &&
-            prefixes.map((prefix, index) => (
-              <option key={index}>{prefix}</option>
-            ))}
-        </select>
-        Root syllable
-        <select
-          name="root"
-          value={this.state.root}
-          onChange={this.handleChange}
-        >
-          <option></option>
-          {Object.keys(roots).map((rootSyllable, index) => (
-            <option key={index}>{rootSyllable}</option>
-          ))}
-        </select>
-        Suffixes
-        <select
-          name="suffix"
-          value={this.state.suffix}
-          onChange={this.handleChange}
-        >
-          <option></option>
-          {this.state.root &&
-            Object.keys(suffixes).map((suffix, index) => (
-              <option key={index}>{suffix}</option>
-            ))}
-        </select>
-        <select
-          name="secondSuffix"
-          value={this.state.secondSuffix}
-          onChange={this.handleChange}
-        >
-          <option></option>
-          {this.state.suffix &&
-            secondSuffixes.map((suffix, index) => (
-              <option key={index}>{suffix}</option>
-            ))}
-        </select>
-        <br></br>
-        Subscript
-        <select
-          name="subscript"
-          value={this.state.subscript}
-          onChange={this.handleChange}
-        >
-          <option></option>
-          {this.state.root &&
-            this.state.availableSubscripts.map((subscript, index) => (
-              <option key={index}>{subscript}</option>
-            ))}
-        </select>
+        <div className="options">
+          <div className="option">
+            <div
+              className={
+                this.state.root
+                  ? "option__text"
+                  : "option__text option__text--inactive"
+              }
+            >
+              Superscript
+            </div>
+            <select
+              className={
+                this.state.root
+                  ? "option__select"
+                  : "option__select option__select--inactive"
+              }
+              name="superscript"
+              value={this.state.superscript}
+              onChange={this.handleChange}
+            >
+              <option></option>
+              {this.state.root &&
+                superscripts.map((superscript, index) => (
+                  <option key={index}>{superscript}</option>
+                ))}
+            </select>
+          </div>
+          <div className="option">
+            <div
+              className={
+                this.state.root
+                  ? "option__text"
+                  : "option__text option__text--inactive"
+              }
+            >
+              Prefix
+            </div>
+            <select
+              className={
+                this.state.root
+                  ? "option__select"
+                  : "option__select option__select--inactive"
+              }
+              name="prefix"
+              value={this.state.prefix}
+              onChange={this.handleChange}
+            >
+              <option></option>
+              {this.state.root &&
+                prefixes.map((prefix, index) => (
+                  <option key={index}>{prefix}</option>
+                ))}
+            </select>
+          </div>
+          <div className="option">
+            Root syllable
+            <select
+              className="option__select"
+              name="root"
+              value={this.state.root}
+              onChange={this.handleChange}
+            >
+              <option></option>
+              {Object.keys(roots).map((rootSyllable, index) => (
+                <option key={index}>{rootSyllable}</option>
+              ))}
+            </select>
+          </div>
+          {/* <div className="option">
+            Suffix 1
+            <select
+              className={
+                this.state.root
+                  ? "option__select"
+                  : "option__select option__select--inactive"
+              }
+              name="suffix"
+              value={this.state.suffix}
+              onChange={this.handleChange}
+            >
+              <option></option>
+              {this.state.root &&
+                Object.keys(suffixes).map((suffix, index) => (
+                  <option key={index}>{suffix}</option>
+                ))}
+            </select>
+            <select
+              className={
+                this.state.suffix
+                  ? "option__select"
+                  : "option__select option__select--inactive"
+              }
+              name="secondSuffix"
+              value={this.state.secondSuffix}
+              onChange={this.handleChange}
+            >
+              <option>Suffix 2</option>
+              {this.state.suffix &&
+                secondSuffixes.map((suffix, index) => (
+                  <option key={index}>{suffix}</option>
+                ))}
+            </select>
+          </div> */}
+
+          <div className="option">
+            <div
+              className={
+                this.state.root
+                  ? "option__text"
+                  : "option__text option__text--inactive"
+              }
+            >
+              Suffix 1
+            </div>
+            <select
+              className={
+                this.state.root
+                  ? "option__select"
+                  : "option__select option__select--inactive"
+              }
+              name="suffix"
+              value={this.state.suffix}
+              onChange={this.handleChange}
+            >
+              <option></option>
+              {this.state.root &&
+                Object.keys(suffixes).map((suffix, index) => (
+                  <option key={index}>{suffix}</option>
+                ))}
+            </select>
+          </div>
+
+          <div className="option">
+            <div
+              className={
+                this.state.suffix
+                  ? "option__text"
+                  : "option__text option__text--inactive"
+              }
+            >
+              Suffix 2
+            </div>
+            <select
+              className={
+                this.state.suffix
+                  ? "option__select"
+                  : "option__select option__select--inactive"
+              }
+              name="secondSuffix"
+              value={this.state.secondSuffix}
+              onChange={this.handleChange}
+            >
+              <option></option>
+              {this.state.suffix &&
+                secondSuffixes.map((suffix, index) => (
+                  <option key={index}>{suffix}</option>
+                ))}
+            </select>
+          </div>
+
+          <div className="option">
+            <div
+              className={
+                this.state.root
+                  ? "option__text"
+                  : "option__text option__text--inactive"
+              }
+            >
+              Subscript
+            </div>
+            <select
+              className={
+                this.state.root
+                  ? "option__select"
+                  : "option__select option__select--inactive"
+              }
+              name="subscript"
+              value={this.state.subscript}
+              onChange={this.handleChange}
+            >
+              <option></option>
+              {this.state.root &&
+                this.state.availableSubscripts.map((subscript, index) => (
+                  <option key={index}>{subscript}</option>
+                ))}
+            </select>
+          </div>
+        </div>
       </div>
     );
   }
