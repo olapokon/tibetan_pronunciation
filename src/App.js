@@ -257,6 +257,7 @@ class App extends Component {
               name="superscript"
               value={this.state.superscript}
               onChange={this.handleChange}
+              disabled={!this.state.root}
             >
               <option></option>
               {this.state.root &&
@@ -284,6 +285,7 @@ class App extends Component {
               name="prefix"
               value={this.state.prefix}
               onChange={this.handleChange}
+              disabled={!this.state.root}
             >
               <option></option>
               {this.state.root &&
@@ -326,6 +328,7 @@ class App extends Component {
               name="suffix"
               value={this.state.suffix}
               onChange={this.handleChange}
+              disabled={!this.state.root}
             >
               <option></option>
               {this.state.root &&
@@ -354,6 +357,7 @@ class App extends Component {
               name="secondSuffix"
               value={this.state.secondSuffix}
               onChange={this.handleChange}
+              disabled={!this.state.suffix}
             >
               <option></option>
               {this.state.suffix &&
@@ -382,6 +386,7 @@ class App extends Component {
               name="subscript"
               value={this.state.subscript}
               onChange={this.handleChange}
+              disabled={!this.state.availableSubscripts.length > 0}
             >
               <option></option>
               {this.state.root &&
