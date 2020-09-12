@@ -32,27 +32,31 @@ class App extends Component {
 
 	handleChange(event) {
 		const { name, value } = event.target;
-		if (name === 'root') {
-			this.setState({
-				[name]: value,
-			});
-			this.handleRootChange(value);
-		} else if (name === 'suffix') {
-			this.setState({ secondSuffix: '', [name]: value });
-		} else if (name === 'superscript') {
-			// the la subscript cannot be displayed if there is a superscript
-			// remove la from the subscripts menu if a superscript is selected and clear current subscript
-			if (value) {
-				const prunedSubscripts = [...this.state.availableSubscripts];
-				if (prunedSubscripts.includes('\u0F63')) {
-					prunedSubscripts.splice(prunedSubscripts.indexOf('\u0F63'), 1);
-				}
+		switch (name) {
+			case 'root':
 				this.setState({
 					[name]: value,
-					availableSubscripts: prunedSubscripts,
-					subscript: '',
 				});
-			} else {
+				this.handleRootChange(value);
+				break;
+			case 'suffix':
+				this.setState({ secondSuffix: '', [name]: value });
+				break;
+			case 'superscript':
+				// the la subscript cannot be displayed if there is a superscript
+				// remove la from the subscripts menu if a superscript is selected and clear current subscript
+				if (value) {
+					const prunedSubscripts = [...this.state.availableSubscripts];
+					if (prunedSubscripts.includes('\u0F63')) {
+						prunedSubscripts.splice(prunedSubscripts.indexOf('\u0F63'), 1);
+					}
+					this.setState({
+						[name]: value,
+						availableSubscripts: prunedSubscripts,
+						subscript: '',
+					});
+					break;
+				}
 				// if the superscript is deselected, load all subscripts for the current root
 				if (subscriptsTable[this.state.root]) {
 					this.setState({
@@ -64,15 +68,16 @@ class App extends Component {
 						[name]: value,
 					});
 				}
-			}
-		} else {
-			this.setState({ [name]: value });
+				break;
+			default:
+				this.setState({ [name]: value });
+				break;
 		}
 	}
 
 	handleRootChange(value) {
-		/* prefixes, superscripts, and suffixes are available for all roots, specific subscripts are available
-    to specific roots */
+		// prefixes, superscripts, and suffixes are available for all roots,
+		// specific subscripts are available to specific roots
 
 		// reset the affixes in state
 		this.setState({
