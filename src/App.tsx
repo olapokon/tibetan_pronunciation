@@ -23,6 +23,9 @@ type AppState = {
 	availableSubscripts: string[];
 };
 
+type Tone = 'LOW' | 'HIGH' | null;
+type Column = 'THIRD' | 'FOURTH' | null;
+
 // manual of standard tibetan p 44
 class App extends Component<AppProps, AppState> {
 	state: AppState = {
@@ -35,7 +38,7 @@ class App extends Component<AppProps, AppState> {
 		availableSubscripts: [],
 	};
 
-	handleChange = (event: any): void => {
+	handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
 		const { name, value } = event.target;
 		switch (name) {
 			case 'root':
@@ -89,9 +92,9 @@ class App extends Component<AppProps, AppState> {
 				});
 				break;
 		}
-	}
+	};
 
-	handleRootChange = (value: string): void =>  {
+	handleRootChange = (value: string): void => {
 		// prefixes, superscripts, and suffixes are available for all roots,
 		// specific subscripts are available to specific roots
 
@@ -110,9 +113,9 @@ class App extends Component<AppProps, AppState> {
 				availableSubscripts: [...subscriptsTable[value]],
 			});
 		}
-	}
+	};
 
-	createRootDisplay = (): string =>  {
+	createRootDisplay = (): string => {
 		let rootDisplay = '';
 		if (this.state.superscript) {
 			rootDisplay = this.state.superscript + superscribedRootsTable[this.state.root];
@@ -125,33 +128,33 @@ class App extends Component<AppProps, AppState> {
 		return this.state.root
 			? `${this.state.prefix}${rootDisplay}${this.state.suffix}${this.state.secondSuffix}`
 			: '\u0F00';
-	}
+	};
 
-	createTranscriptionDisplay = (): string =>  {
+	createTranscriptionDisplay = (): string => {
 		const rootsArray = Object.keys(roots);
 		let currentRoot = roots[this.state.root] ? roots[this.state.root] : '';
-		let tone = '';
 		let diairesis = false;
 		let suffix = '';
+		let tone: Tone = null;
+		let rootColumn: Column = null;
 
 		// determine if the root belongs to the third or fourth column
-		let rootColumn = '';
 		if (rootsArray.indexOf(this.state.root) > 15 && rootsArray.indexOf(this.state.root) < 21) {
-			rootColumn = 'third';
+			rootColumn = 'THIRD';
 		} else if (
 			rootsArray.indexOf(this.state.root) > 24 &&
 			rootsArray.indexOf(this.state.root) < 29
 		) {
-			rootColumn = 'fourth';
+			rootColumn = 'FOURTH';
 		}
 
 		// determine if there is change in the root, based on a prefix, superscript, or subscript
 		// the root change of the subscript overrides the root change for a third column root with prefix
 		if (this.state.prefix || this.state.superscript) {
-			if (rootColumn === 'third') {
+			if (rootColumn === 'THIRD') {
 				currentRoot = modifiedThirdColumn[this.state.root];
-			} else if (rootColumn === 'fourth') {
-				tone = 'high';
+			} else if (rootColumn === 'FOURTH') {
+				tone = 'HIGH';
 			}
 		}
 
@@ -164,13 +167,13 @@ class App extends Component<AppProps, AppState> {
 						case '\u0F4F':
 						case '\u0F54':
 							currentRoot = 'tra';
-							tone = 'high';
+							tone = 'HIGH';
 							break;
 						case '\u0F41':
 						case '\u0F50':
 						case '\u0F55':
 							currentRoot = 'thra';
-							tone = 'high';
+							tone = 'HIGH';
 							break;
 						case '\u0F42':
 						case '\u0F51':
@@ -180,7 +183,7 @@ class App extends Component<AppProps, AppState> {
 							} else {
 								currentRoot = 'thra';
 							}
-							tone = 'low';
+							tone = 'LOW';
 							break;
 						case '\u0F67':
 							currentRoot = 'hra';
@@ -194,10 +197,10 @@ class App extends Component<AppProps, AppState> {
 				case '\u0F63':
 					if (this.state.root === '\u0F5F') {
 						currentRoot = 'da';
-						tone = 'low';
+						tone = 'LOW';
 					} else {
 						currentRoot = 'la';
-						tone = 'high';
+						tone = 'HIGH';
 					}
 					break;
 
@@ -206,19 +209,19 @@ class App extends Component<AppProps, AppState> {
 					switch (this.state.root) {
 						case '\u0F58':
 							currentRoot = 'nya';
-							tone = 'low';
+							tone = 'LOW';
 							break;
 						case '\u0F54':
 							currentRoot = 'ca';
-							tone = 'high';
+							tone = 'HIGH';
 							break;
 						case '\u0F55':
 							currentRoot = 'cha';
-							tone = 'high';
+							tone = 'HIGH';
 							break;
 						case '\u0F56':
 							currentRoot = 'cha';
-							tone = 'low';
+							tone = 'LOW';
 							break;
 						default:
 							currentRoot = currentRoot.slice(0, -1) + 'ya';
@@ -245,12 +248,12 @@ class App extends Component<AppProps, AppState> {
 
 		let transliterationDisplay = currentRoot;
 		if (diairesis) transliterationDisplay += '\u0308';
-		if (tone === 'high') transliterationDisplay += '\u0301';
-		if (tone === 'low') transliterationDisplay += '\u0300';
+		if (tone === 'HIGH') transliterationDisplay += '\u0301';
+		if (tone === 'LOW') transliterationDisplay += '\u0300';
 		transliterationDisplay += suffix;
 
 		return transliterationDisplay;
-	}
+	};
 
 	/*
 	 *	diairesis: \u0308
