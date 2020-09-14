@@ -11,36 +11,46 @@ import {
 	superscribedRootsTable,
 } from './tibetanUnicodeData';
 
-// manual of standard tibetan p 44
-class App extends Component {
-	constructor() {
-		super();
-		this.state = {
-			root: '',
-			superscript: '',
-			prefix: '',
-			suffix: '',
-			secondSuffix: '',
-			subscript: '',
-			availableSubscripts: [],
-		};
-		this.handleChange = this.handleChange.bind(this);
-		this.handleRootChange = this.handleRootChange.bind(this);
-		this.createRootDisplay = this.createRootDisplay.bind(this);
-		this.createTranscriptionDisplay = this.createTranscriptionDisplay.bind(this);
-	}
+type AppProps = null;
 
-	handleChange(event) {
+type AppState = {
+	root: string;
+	superscript: string;
+	prefix: string;
+	suffix: string;
+	secondSuffix: string;
+	subscript: string;
+	availableSubscripts: string[];
+};
+
+// manual of standard tibetan p 44
+class App extends Component<AppProps, AppState> {
+	state: AppState = {
+		root: '',
+		superscript: '',
+		prefix: '',
+		suffix: '',
+		secondSuffix: '',
+		subscript: '',
+		availableSubscripts: [],
+	};
+
+	handleChange = (event: any): void => {
 		const { name, value } = event.target;
 		switch (name) {
 			case 'root':
 				this.setState({
+					...this.state,
 					[name]: value,
 				});
 				this.handleRootChange(value);
 				break;
 			case 'suffix':
-				this.setState({ secondSuffix: '', [name]: value });
+				this.setState({
+					...this.state,
+					secondSuffix: '',
+					[name]: value,
+				});
 				break;
 			case 'superscript':
 				// the la subscript cannot be displayed if there is a superscript
@@ -51,6 +61,7 @@ class App extends Component {
 						prunedSubscripts.splice(prunedSubscripts.indexOf('\u0F63'), 1);
 					}
 					this.setState({
+						...this.state,
 						[name]: value,
 						availableSubscripts: prunedSubscripts,
 						subscript: '',
@@ -60,22 +71,27 @@ class App extends Component {
 				// if the superscript is deselected, load all subscripts for the current root
 				if (subscriptsTable[this.state.root]) {
 					this.setState({
+						...this.state,
 						availableSubscripts: [...subscriptsTable[this.state.root]],
 						[name]: value,
 					});
 				} else {
 					this.setState({
+						...this.state,
 						[name]: value,
 					});
 				}
 				break;
 			default:
-				this.setState({ [name]: value });
+				this.setState({
+					...this.state,
+					[name]: value,
+				});
 				break;
 		}
 	}
 
-	handleRootChange(value) {
+	handleRootChange = (value: string): void =>  {
 		// prefixes, superscripts, and suffixes are available for all roots,
 		// specific subscripts are available to specific roots
 
@@ -96,7 +112,7 @@ class App extends Component {
 		}
 	}
 
-	createRootDisplay() {
+	createRootDisplay = (): string =>  {
 		let rootDisplay = '';
 		if (this.state.superscript) {
 			rootDisplay = this.state.superscript + superscribedRootsTable[this.state.root];
@@ -111,7 +127,7 @@ class App extends Component {
 			: '\u0F00';
 	}
 
-	createTranscriptionDisplay() {
+	createTranscriptionDisplay = (): string =>  {
 		const rootsArray = Object.keys(roots);
 		let currentRoot = roots[this.state.root] ? roots[this.state.root] : '';
 		let tone = '';
@@ -236,14 +252,15 @@ class App extends Component {
 		return transliterationDisplay;
 	}
 
+	/*
+	 *	diairesis: \u0308
+	 *	high tone: \u0301
+	 *	low tone: \u0300
+	 */
+
 	render() {
 		return (
 			<div className="container">
-				{/* 
-					diairesis: \u0308
-					high tone: \u0301
-					low tone: \u0300
-				*/}
 				<div className="display--tibetan">
 					<h1>{this.createRootDisplay()}</h1>
 				</div>
@@ -397,7 +414,7 @@ class App extends Component {
 							name="subscript"
 							value={this.state.subscript}
 							onChange={this.handleChange}
-							disabled={!this.state.availableSubscripts.length > 0}
+							disabled={!(this.state.availableSubscripts.length > 0)}
 						>
 							<option></option>
 							{this.state.root &&

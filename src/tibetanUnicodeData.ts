@@ -1,8 +1,8 @@
-export const superscripts = ['\u0F62', '\u0F63', '\u0F66'];
+export const superscripts: string[] = ['\u0F62', '\u0F63', '\u0F66'];
 
-export const prefixes = ['\u0F42', '\u0F51', '\u0F56', '\u0F58', '\u0F60'];
+export const prefixes: string[] = ['\u0F42', '\u0F51', '\u0F56', '\u0F58', '\u0F60'];
 
-export const roots = {
+export const roots: { [unicode: string]: string } = {
 	ཀ: 'ka',
 	ཅ: 'ca',
 	ཏ: 'ta',
@@ -35,7 +35,7 @@ export const roots = {
 	ས: 'sa',
 };
 
-export const modifiedThirdColumn = {
+export const modifiedThirdColumn: { [unicode: string]: string } = {
 	ག: 'ga',
 	ཇ: 'ja',
 	ད: 'da',
@@ -43,7 +43,7 @@ export const modifiedThirdColumn = {
 	ཛ: 'dza',
 };
 
-export const suffixes = {
+export const suffixes: { [unicode: string]: string } = {
 	ག: 'k',
 	ང: 'ng',
 	ད: '',
@@ -56,9 +56,9 @@ export const suffixes = {
 	ས: '',
 };
 
-export const secondSuffixes = ['\u0F51', '\u0F66'];
+export const secondSuffixes: string[] = ['\u0F51', '\u0F66'];
 
-export const superscribedRootsTable = {
+export const superscribedRootsTable: { [unicode: string]: string } = {
 	ཀ: '\u0F90',
 	ཅ: '\u0F95',
 	ཏ: '\u0F9F',
@@ -91,7 +91,7 @@ export const superscribedRootsTable = {
 	ས: '\u0FB6',
 };
 
-export const subscriptsTable = {
+export const subscriptsTable: { [unicode: string]: string[] } = {
 	ཀ: ['\u0F61', '\u0F62', '\u0F63'],
 	ཁ: ['\u0F61', '\u0F62'],
 	ག: ['\u0F61', '\u0F62', '\u0F63'],
@@ -109,4 +109,8 @@ export const subscriptsTable = {
 	ཧ: ['\u0F62'],
 };
 
-export const subscriptsDisplayTable = { ཡ: '\u0FB1', ར: '\u0FB2', ལ: '\u0FB3' };
+export const subscriptsDisplayTable: { [unicode: string]: string } = {
+	ཡ: '\u0FB1',
+	ར: '\u0FB2',
+	ལ: '\u0FB3',
+};
