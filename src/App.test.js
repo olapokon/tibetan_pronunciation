@@ -25,29 +25,27 @@ it('renders without crashing', () => {});
 
 // root: 'kha', superscript: 'sa', subscript: 'ra', suffix 1: 'la': expected: 'drä̀l'
 it('returns the correct result: with root sound change and diairesis', () => {
+	let event = document.createEvent('HTMLEvents');
+	event.initEvent('change', true, false);
+
 	// trigger root change event - 'kha'
 	const rootSelect = container.querySelector('#root');
 	rootSelect.value = 'ག';
-	let event = document.createEvent('HTMLEvents');
-	event.initEvent('change', true, false);
 	rootSelect.dispatchEvent(event);
 
 	// trigger superscript change event - 'sa'
 	const superscriptSelect = container.querySelector('#superscript');
 	superscriptSelect.value = 'ས';
-	event.initEvent('change', true, false);
 	superscriptSelect.dispatchEvent(event);
 
 	// trigger subscript change event - 'ra'
 	const subscriptSelect = container.querySelector('#subscript');
 	subscriptSelect.value = 'ར';
-	event.initEvent('change', true, false);
 	subscriptSelect.dispatchEvent(event);
 
 	// trigger suffix 1 change event - 'la'
 	const suffix1Select = container.querySelector('#suffix1');
 	suffix1Select.value = 'ལ';
-	event.initEvent('change', true, false);
 	suffix1Select.dispatchEvent(event);
 
 	const transliterationDisplay = container.querySelector('.display--transliteration');
