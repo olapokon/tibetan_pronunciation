@@ -280,6 +280,7 @@ class App extends Component<AppProps, AppState> {
 							Superscript
 						</div>
 						<select
+							id="superscript"
 							className={
 								this.state.root
 									? 'option__select'
@@ -293,7 +294,7 @@ class App extends Component<AppProps, AppState> {
 							<option></option>
 							{this.state.root &&
 								superscripts.map((superscript, index) => (
-									<option key={index}>{superscript}</option>
+									<option key={index} id={`superscript_${superscript}`}>{superscript}</option>
 								))}
 						</select>
 					</div>
@@ -308,6 +309,7 @@ class App extends Component<AppProps, AppState> {
 							Prefix
 						</div>
 						<select
+							id="prefix"
 							className={
 								this.state.root
 									? 'option__select'
@@ -321,13 +323,14 @@ class App extends Component<AppProps, AppState> {
 							<option></option>
 							{this.state.root &&
 								prefixes.map((prefix, index) => (
-									<option key={index}>{prefix}</option>
+									<option key={index} id={`prefix_${prefix}`}>{prefix}</option>
 								))}
 						</select>
 					</div>
-					<div className="option">
+					<div className="root option">
 						Root syllable
 						<select
+							id="root"
 							className="option__select"
 							name="root"
 							value={this.state.root}
@@ -335,7 +338,7 @@ class App extends Component<AppProps, AppState> {
 						>
 							<option></option>
 							{Object.keys(roots).map((rootSyllable, index) => (
-								<option key={index}>{rootSyllable}</option>
+								<option key={index} id={`root_${rootSyllable}`}>{rootSyllable}</option>
 							))}
 						</select>
 					</div>
@@ -351,6 +354,7 @@ class App extends Component<AppProps, AppState> {
 							Suffix 1
 						</div>
 						<select
+							id="suffix1"
 							className={
 								this.state.root
 									? 'option__select'
@@ -364,7 +368,7 @@ class App extends Component<AppProps, AppState> {
 							<option></option>
 							{this.state.root &&
 								Object.keys(suffixes).map((suffix, index) => (
-									<option key={index}>{suffix}</option>
+									<option key={index} id={`suffix1_${suffix}`}>{suffix}</option>
 								))}
 						</select>
 					</div>
@@ -380,6 +384,7 @@ class App extends Component<AppProps, AppState> {
 							Suffix 2
 						</div>
 						<select
+							id="suffix2"
 							className={
 								this.state.suffix
 									? 'option__select'
@@ -393,7 +398,7 @@ class App extends Component<AppProps, AppState> {
 							<option></option>
 							{this.state.suffix &&
 								secondSuffixes.map((suffix, index) => (
-									<option key={index}>{suffix}</option>
+									<option key={index} id={`suffix2_${suffix}`}>{suffix}</option>
 								))}
 						</select>
 					</div>
@@ -409,6 +414,7 @@ class App extends Component<AppProps, AppState> {
 							Subscript
 						</div>
 						<select
+							id="subscript"
 							className={
 								this.state.availableSubscripts.length > 0
 									? 'option__select'
@@ -422,7 +428,7 @@ class App extends Component<AppProps, AppState> {
 							<option></option>
 							{this.state.root &&
 								this.state.availableSubscripts.map((subscript, index) => (
-									<option key={index}>{subscript}</option>
+									<option key={index} id={`subscript_${subscript}`}>{subscript}</option>
 								))}
 						</select>
 					</div>
