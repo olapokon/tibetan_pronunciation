@@ -1,7 +1,7 @@
-export type TibetanSyllable = {
+export interface TibetanSyllable {
 	wylie: string;
 	phonetic: string;
-	// unicode: string;
+	unicodeCodePoint: string;
 	column: Column;
 };
 
@@ -21,151 +21,181 @@ export const roots: { [unicode: string]: TibetanSyllable } = {
 	ཀ: {
 		wylie: 'ka',
 		phonetic: 'ka',
+		unicodeCodePoint: '\u0F40',
 		column: Column.FIRST,
 	},
 	ཅ: {
 		wylie: 'ca',
 		phonetic: 'ca',
+		unicodeCodePoint: '\u0F45',
 		column: Column.FIRST,
 	},
 	ཏ: {
 		wylie: 'ta',
 		phonetic: 'ta',
+		unicodeCodePoint: '\u0F4F',
 		column: Column.FIRST,
 	},
 	པ: {
 		wylie: 'pa',
 		phonetic: 'pa',
+		unicodeCodePoint: '\u0F54',
 		column: Column.FIRST,
 	},
 	ཙ: {
 		wylie: 'tsa',
 		phonetic: 'tsa',
+		unicodeCodePoint: '\u0F59',
 		column: Column.FIRST,
 	},
 	ཞ: {
 		wylie: 'zha',
 		phonetic: 'zha',
+		unicodeCodePoint: '\u0F5E',
 		column: Column.NONE,
 	},
 	ར: {
 		wylie: 'ra',
 		phonetic: 'ra',
+		unicodeCodePoint: '\u0F62',
 		column: Column.NONE,
 	},
 	ཧ: {
 		wylie: 'ha',
 		phonetic: 'ha',
+		unicodeCodePoint: '\u0F67',
 		column: Column.NONE,
 	},
 	ཁ: {
 		wylie: 'kha',
 		phonetic: 'kha',
+		unicodeCodePoint: '\u0F41',
 		column: Column.SECOND,
 	},
 	ཆ: {
 		wylie: 'cha',
 		phonetic: 'cha',
+		unicodeCodePoint: '\u0F46',
 		column: Column.SECOND,
 	},
 	ཐ: {
 		wylie: 'tha',
 		phonetic: 'tha',
+		unicodeCodePoint: '\u0F50',
 		column: Column.SECOND,
 	},
 	ཕ: {
 		wylie: 'pha',
 		phonetic: 'pha',
+		unicodeCodePoint: '\u0F55',
 		column: Column.SECOND,
 	},
 	ཚ: {
 		wylie: 'tsha',
 		phonetic: 'tsha',
+		unicodeCodePoint: '\u0F5A',
 		column: Column.SECOND,
 	},
 	ཟ: {
 		wylie: 'za',
 		phonetic: 'za',
+		unicodeCodePoint: '\u0F5F',
 		column: Column.NONE,
 	},
 	ལ: {
 		wylie: 'la',
 		phonetic: 'la',
+		unicodeCodePoint: '\u0F63',
 		column: Column.NONE,
 	},
 	ཨ: {
 		wylie: 'a',
 		phonetic: 'a',
+		unicodeCodePoint: '\u0F68',
 		column: Column.NONE,
 	},
 	ག: {
 		wylie: 'ga',
 		phonetic: 'kha',
+		unicodeCodePoint: '\u0F42',
 		column: Column.THIRD,
 	},
 	ཇ: {
 		wylie: 'ja',
 		phonetic: 'cha',
+		unicodeCodePoint: '\u0F47',
 		column: Column.THIRD,
 	},
 	ད: {
 		wylie: 'da',
 		phonetic: 'tha',
+		unicodeCodePoint: '\u0F51',
 		column: Column.THIRD,
 	},
 	བ: {
 		wylie: 'ba',
 		phonetic: 'pha',
+		unicodeCodePoint: '\u0F56',
 		column: Column.THIRD,
 	},
 	ཛ: {
 		wylie: 'dza',
 		phonetic: 'dza',
+		unicodeCodePoint: '\u0F5B',
 		column: Column.THIRD,
 	},
 	འ: {
 		wylie: "'a",
 		phonetic: 'a',
+		unicodeCodePoint: '\u0F60',
 		column: Column.NONE,
 	},
 	ཤ: {
 		wylie: 'sha',
 		phonetic: 'sha',
+		unicodeCodePoint: '\u0F64',
 		column: Column.NONE,
 	},
 	ང: {
 		wylie: 'nga',
 		phonetic: 'nga',
+		unicodeCodePoint: '\u0F44',
 		column: Column.FOURTH,
 	},
 	ཉ: {
 		wylie: 'nya',
 		phonetic: 'nya',
+		unicodeCodePoint: '\u0F49',
 		column: Column.FOURTH,
 	},
 	ན: {
 		wylie: 'na',
 		phonetic: 'na',
+		unicodeCodePoint: '\u0F53',
 		column: Column.FOURTH,
 	},
 	མ: {
 		wylie: 'ma',
 		phonetic: 'ma',
+		unicodeCodePoint: '\u0F58',
 		column: Column.FOURTH,
 	},
 	ཝ: {
 		wylie: 'wa',
 		phonetic: 'wa',
+		unicodeCodePoint: '\u0F5D',
 		column: Column.NONE, // TODO: FOURTH or NONE?
 	},
 	ཡ: {
 		wylie: 'ya',
 		phonetic: 'ya',
+		unicodeCodePoint: '\u0F61',
 		column: Column.NONE,
 	},
 	ས: {
 		wylie: 'sa',
 		phonetic: 'sa',
+		unicodeCodePoint: '\u0F66',
 		column: Column.NONE,
 	},
 };
