@@ -3,13 +3,16 @@ import {
 	superscripts,
 	prefixes,
 	roots,
-	modifiedThirdColumn,
 	suffixes,
 	secondSuffixes,
 	subscriptsTable,
-	subscriptsDisplayTable,
-	superscribedRootsTable,
+	Column,
+	Tone,
 } from './tibetanUnicodeData';
+
+const DIAIRESIS_UNICODE_CODEPOINT = '\u0308';
+const HIGH_TONE_UNICODE_CODEPOINT = '\u0301';
+const LOW_TONE_UNICODE_CODEPOINT = '\u0300';
 
 type AppProps = null;
 
@@ -22,9 +25,6 @@ type AppState = {
 	subscript: string;
 	availableSubscripts: string[];
 };
-
-type Tone = 'LOW' | 'HIGH' | null;
-type Column = 'THIRD' | 'FOURTH' | null;
 
 // manual of standard tibetan p 44
 class App extends Component<AppProps, AppState> {
@@ -60,8 +60,8 @@ class App extends Component<AppProps, AppState> {
 				// remove la from the subscripts menu if a superscript is selected and clear current subscript
 				if (value) {
 					const prunedSubscripts = [...this.state.availableSubscripts];
-					if (prunedSubscripts.includes('\u0F63')) {
-						prunedSubscripts.splice(prunedSubscripts.indexOf('\u0F63'), 1);
+					if (prunedSubscripts.includes('ལ')) {
+						prunedSubscripts.splice(prunedSubscripts.indexOf('ལ'), 1);
 					}
 					this.setState({
 						...this.state,
@@ -115,78 +115,81 @@ class App extends Component<AppProps, AppState> {
 		}
 	};
 
-	createRootDisplay = (): string => {
-		let rootDisplay = '';
-		if (this.state.superscript) {
-			rootDisplay = this.state.superscript + superscribedRootsTable[this.state.root];
-		} else {
-			rootDisplay = this.state.root;
+	createTibetanDisplay = (): string => {
+		if (!this.state.root) {
+			return 'ཨ';
 		}
-		if (this.state.subscript) {
-			rootDisplay += subscriptsDisplayTable[this.state.subscript];
-		}
-		return this.state.root
-			? `${this.state.prefix}${rootDisplay}${this.state.suffix}${this.state.secondSuffix}`
-			: '\u0F00';
+		const prefix = this.state.prefix ? roots[this.state.prefix].unicodeCodePoint : '';
+		const superscript = this.state.superscript
+			? roots[this.state.superscript].unicodeCodePoint
+			: '';
+		const subscript = this.state.subscript
+			? roots[this.state.subscript].unicodeCodePointAsSubscript
+			: '';
+		const suffix = this.state.suffix ? roots[this.state.suffix].unicodeCodePoint : '';
+		const secondSuffix = this.state.secondSuffix
+			? roots[this.state.secondSuffix].unicodeCodePoint
+			: '';
+		const root = superscript
+			? roots[this.state.root].unicodeCodePointAsSubscript
+			: roots[this.state.root].unicodeCodePoint;
+		return `${prefix}${superscript}${root}${subscript}${suffix}${secondSuffix}`;
 	};
 
-	createTranscriptionDisplay = (): string => {
+	createPhoneticDisplay = (): string => {
+		if (!this.state.root || !roots[this.state.root]) {
+			return '';
+		}
+
+		const root = roots[this.state.root];
+		let rootPhonetic = root.phonetic;
+		const column = roots[this.state.root].column;
+		let tone: Tone = Tone.NONE;
+
 		const rootsArray = Object.keys(roots);
-		let currentRoot = roots[this.state.root] ? roots[this.state.root] : '';
 		let diairesis = false;
 		let suffix = '';
-		let tone: Tone = null;
-		let rootColumn: Column = null;
-
-		// determine if the root belongs to the third or fourth column
-		if (rootsArray.indexOf(this.state.root) > 15 && rootsArray.indexOf(this.state.root) < 21) {
-			rootColumn = 'THIRD';
-		} else if (
-			rootsArray.indexOf(this.state.root) > 24 &&
-			rootsArray.indexOf(this.state.root) < 29
-		) {
-			rootColumn = 'FOURTH';
-		}
 
 		// determine if there is change in the root, based on a prefix, superscript, or subscript
 		// the root change of the subscript overrides the root change for a third column root with prefix
 		if (this.state.prefix || this.state.superscript) {
-			if (rootColumn === 'THIRD') {
-				currentRoot = modifiedThirdColumn[this.state.root];
-			} else if (rootColumn === 'FOURTH') {
-				tone = 'HIGH';
+			if (column === Column.THIRD) {
+				rootPhonetic = root.phoneticModifiedThirdColumn ? root.phoneticModifiedThirdColumn : root.phonetic;
+			}
+			if (column === Column.FOURTH) {
+				tone = Tone.HIGH;
 			}
 		}
 
 		if (this.state.subscript) {
 			switch (this.state.subscript) {
 				// ra subscript
-				case '\u0F62':
+				case 'ར':
 					switch (this.state.root) {
-						case '\u0F40':
-						case '\u0F4F':
-						case '\u0F54':
-							currentRoot = 'tra';
-							tone = 'HIGH';
+						case 'ཀ':
+						case 'ཏ':
+						case 'པ':
+							rootPhonetic = 'tra';
+							tone = Tone.HIGH;
 							break;
-						case '\u0F41':
-						case '\u0F50':
-						case '\u0F55':
-							currentRoot = 'thra';
-							tone = 'HIGH';
+						case 'ཁ':
+						case 'ཐ':
+						case 'ཕ':
+							rootPhonetic = 'thra';
+							tone = Tone.HIGH;
 							break;
-						case '\u0F42':
-						case '\u0F51':
-						case '\u0F56':
-							if (this.state.superscript === '\u0F66') {
-								currentRoot = 'dra';
+						case 'ག':
+						case 'ད':
+						case 'བ':
+							if (this.state.superscript === 'ས') {
+								rootPhonetic = 'dra';
 							} else {
-								currentRoot = 'thra';
+								rootPhonetic = 'thra';
 							}
-							tone = 'LOW';
+							tone = Tone.LOW;
 							break;
-						case '\u0F67':
-							currentRoot = 'hra';
+						case 'ཧ':
+							rootPhonetic = 'hra';
 							break;
 						default:
 							break;
@@ -194,37 +197,37 @@ class App extends Component<AppProps, AppState> {
 					break;
 
 				// la subscript
-				case '\u0F63':
-					if (this.state.root === '\u0F5F') {
-						currentRoot = 'da';
-						tone = 'LOW';
+				case 'ལ':
+					if (this.state.root === 'ཟ') {
+						rootPhonetic = 'da';
+						tone = Tone.LOW;
 					} else {
-						currentRoot = 'la';
-						tone = 'HIGH';
+						rootPhonetic = 'la';
+						tone = Tone.HIGH;
 					}
 					break;
 
 				// ya subscript
-				case '\u0F61':
+				case 'ཡ':
 					switch (this.state.root) {
-						case '\u0F58':
-							currentRoot = 'nya';
-							tone = 'LOW';
+						case 'མ':
+							rootPhonetic = 'nya';
+							tone = Tone.LOW;
 							break;
-						case '\u0F54':
-							currentRoot = 'ca';
-							tone = 'HIGH';
+						case 'པ':
+							rootPhonetic = 'ca';
+							tone = Tone.HIGH;
 							break;
-						case '\u0F55':
-							currentRoot = 'cha';
-							tone = 'HIGH';
+						case 'ཕ':
+							rootPhonetic = 'cha';
+							tone = Tone.HIGH;
 							break;
-						case '\u0F56':
-							currentRoot = 'cha';
-							tone = 'LOW';
+						case 'བ':
+							rootPhonetic = 'cha';
+							tone = Tone.LOW;
 							break;
 						default:
-							currentRoot = currentRoot.slice(0, -1) + 'ya';
+							rootPhonetic = rootPhonetic.slice(0, -1) + 'ya';
 							break;
 					}
 					break;
@@ -236,68 +239,36 @@ class App extends Component<AppProps, AppState> {
 
 		if (this.state.suffix) {
 			if (
-				this.state.suffix === '\u0F51' ||
-				this.state.suffix === '\u0F53' ||
-				this.state.suffix === '\u0F63' ||
-				this.state.suffix === '\u0F66'
+				this.state.suffix === 'ད' ||
+				this.state.suffix === 'ན' ||
+				this.state.suffix === 'ལ' ||
+				this.state.suffix === 'ས'
 			) {
 				diairesis = true;
 			}
-			suffix = suffixes[this.state.suffix];
+			suffix = roots[this.state.suffix].phoneticAsSuffix || '';
 		}
 
-		let transliterationDisplay = currentRoot;
-		if (diairesis) transliterationDisplay += '\u0308';
-		if (tone === 'HIGH') transliterationDisplay += '\u0301';
-		if (tone === 'LOW') transliterationDisplay += '\u0300';
-		transliterationDisplay += suffix;
+		let phoneticDisplay = rootPhonetic;
+		if (diairesis) phoneticDisplay += DIAIRESIS_UNICODE_CODEPOINT;
+		if (tone === Tone.HIGH) phoneticDisplay += HIGH_TONE_UNICODE_CODEPOINT;
+		if (tone === Tone.LOW) phoneticDisplay += LOW_TONE_UNICODE_CODEPOINT;
+		phoneticDisplay += suffix;
 
-		return transliterationDisplay;
+		return phoneticDisplay;
 	};
-
-	/*
-	 *	diairesis: \u0308
-	 *	high tone: \u0301
-	 *	low tone: \u0300
-	 */
 
 	render() {
 		return (
 			<div className="container">
+				{/* tibetan display */}
 				<div className="display--tibetan">
-					<h1>{this.createRootDisplay()}</h1>
+					<h1>{this.createTibetanDisplay()}</h1>
 				</div>
-				<div className="display--transliteration">{this.createTranscriptionDisplay()}</div>
+				{/* transliteration display */}
+				<div className="display--transliteration">{this.createPhoneticDisplay()}</div>
 				<div className="options">
-					<div className="option">
-						<div
-							className={
-								this.state.root
-									? 'option__text'
-									: 'option__text option__text--inactive'
-							}
-						>
-							Superscript
-						</div>
-						<select
-							id="superscript"
-							className={
-								this.state.root
-									? 'option__select'
-									: 'option__select option__select--inactive'
-							}
-							name="superscript"
-							value={this.state.superscript}
-							onChange={this.handleChange}
-							disabled={!this.state.root}
-						>
-							<option></option>
-							{this.state.root &&
-								superscripts.map((superscript, index) => (
-									<option key={index} id={`superscript_${superscript}`}>{superscript}</option>
-								))}
-						</select>
-					</div>
+					{/* prefixes menu */}
 					<div className="option">
 						<div
 							className={
@@ -323,10 +294,45 @@ class App extends Component<AppProps, AppState> {
 							<option></option>
 							{this.state.root &&
 								prefixes.map((prefix, index) => (
-									<option key={index} id={`prefix_${prefix}`}>{prefix}</option>
+									<option key={index} id={`prefix_${prefix}`}>
+										{prefix}
+									</option>
 								))}
 						</select>
 					</div>
+					{/* superscripts menu */}
+					<div className="option">
+						<div
+							className={
+								this.state.root
+									? 'option__text'
+									: 'option__text option__text--inactive'
+							}
+						>
+							Superscript
+						</div>
+						<select
+							id="superscript"
+							className={
+								this.state.root
+									? 'option__select'
+									: 'option__select option__select--inactive'
+							}
+							name="superscript"
+							value={this.state.superscript}
+							onChange={this.handleChange}
+							disabled={!this.state.root}
+						>
+							<option></option>
+							{this.state.root &&
+								superscripts.map((superscript, index) => (
+									<option key={index} id={`superscript_${superscript}`}>
+										{superscript}
+									</option>
+								))}
+						</select>
+					</div>
+					{/* root syllables menu */}
 					<div className="root option">
 						Root syllable
 						<select
@@ -338,71 +344,13 @@ class App extends Component<AppProps, AppState> {
 						>
 							<option></option>
 							{Object.keys(roots).map((rootSyllable, index) => (
-								<option key={index} id={`root_${rootSyllable}`}>{rootSyllable}</option>
+								<option key={index} id={`root_${rootSyllable}`}>
+									{rootSyllable}
+								</option>
 							))}
 						</select>
 					</div>
-
-					<div className="option">
-						<div
-							className={
-								this.state.root
-									? 'option__text'
-									: 'option__text option__text--inactive'
-							}
-						>
-							Suffix 1
-						</div>
-						<select
-							id="suffix1"
-							className={
-								this.state.root
-									? 'option__select'
-									: 'option__select option__select--inactive'
-							}
-							name="suffix"
-							value={this.state.suffix}
-							onChange={this.handleChange}
-							disabled={!this.state.root}
-						>
-							<option></option>
-							{this.state.root &&
-								Object.keys(suffixes).map((suffix, index) => (
-									<option key={index} id={`suffix1_${suffix}`}>{suffix}</option>
-								))}
-						</select>
-					</div>
-
-					<div className="option">
-						<div
-							className={
-								this.state.suffix
-									? 'option__text'
-									: 'option__text option__text--inactive'
-							}
-						>
-							Suffix 2
-						</div>
-						<select
-							id="suffix2"
-							className={
-								this.state.suffix
-									? 'option__select'
-									: 'option__select option__select--inactive'
-							}
-							name="secondSuffix"
-							value={this.state.secondSuffix}
-							onChange={this.handleChange}
-							disabled={!this.state.suffix}
-						>
-							<option></option>
-							{this.state.suffix &&
-								secondSuffixes.map((suffix, index) => (
-									<option key={index} id={`suffix2_${suffix}`}>{suffix}</option>
-								))}
-						</select>
-					</div>
-
+					{/* subscripts menu */}
 					<div className="option">
 						<div
 							className={
@@ -428,7 +376,73 @@ class App extends Component<AppProps, AppState> {
 							<option></option>
 							{this.state.root &&
 								this.state.availableSubscripts.map((subscript, index) => (
-									<option key={index} id={`subscript_${subscript}`}>{subscript}</option>
+									<option key={index} id={`subscript_${subscript}`}>
+										{subscript}
+									</option>
+								))}
+						</select>
+					</div>
+					{/* suffixes menu */}
+					<div className="option">
+						<div
+							className={
+								this.state.root
+									? 'option__text'
+									: 'option__text option__text--inactive'
+							}
+						>
+							Suffix 1
+						</div>
+						<select
+							id="suffix1"
+							className={
+								this.state.root
+									? 'option__select'
+									: 'option__select option__select--inactive'
+							}
+							name="suffix"
+							value={this.state.suffix}
+							onChange={this.handleChange}
+							disabled={!this.state.root}
+						>
+							<option></option>
+							{this.state.root &&
+								suffixes.map((suffix, index) => (
+									<option key={index} id={`suffix1_${suffix}`}>
+										{suffix}
+									</option>
+								))}
+						</select>
+					</div>
+					{/* second suffixes menu */}
+					<div className="option">
+						<div
+							className={
+								this.state.suffix
+									? 'option__text'
+									: 'option__text option__text--inactive'
+							}
+						>
+							Suffix 2
+						</div>
+						<select
+							id="suffix2"
+							className={
+								this.state.suffix
+									? 'option__select'
+									: 'option__select option__select--inactive'
+							}
+							name="secondSuffix"
+							value={this.state.secondSuffix}
+							onChange={this.handleChange}
+							disabled={!this.state.suffix}
+						>
+							<option></option>
+							{this.state.suffix &&
+								secondSuffixes.map((suffix, index) => (
+									<option key={index} id={`suffix2_${suffix}`}>
+										{suffix}
+									</option>
 								))}
 						</select>
 					</div>
