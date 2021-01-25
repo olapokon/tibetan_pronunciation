@@ -1,4 +1,4 @@
-export interface TibetanSyllable {
+export interface TibetanCharacter {
 	wylie: string;
 	phonetic: string;
 	phoneticAsSuffix?: string;
@@ -23,7 +23,7 @@ export enum Tone {
 	NONE = 'NONE',
 }
 
-export const roots: { [unicode: string]: TibetanSyllable } = {
+export const roots: { [unicode: string]: TibetanCharacter } = {
 	ཀ: {
 		wylie: 'ka',
 		phonetic: 'ka',

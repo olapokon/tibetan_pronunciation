@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TibetanCharacterMenu from './TibetanCharacterMenu';
 import {
 	superscripts,
 	prefixes,
@@ -16,7 +17,7 @@ const LOW_TONE_UNICODE_CODEPOINT = '\u0300';
 
 type AppProps = null;
 
-type AppState = {
+interface AppState {
 	root: string;
 	superscript: string;
 	prefix: string;
@@ -24,7 +25,7 @@ type AppState = {
 	secondSuffix: string;
 	subscript: string;
 	availableSubscripts: string[];
-};
+}
 
 // manual of standard tibetan p 44
 class App extends Component<AppProps, AppState> {
@@ -154,7 +155,9 @@ class App extends Component<AppProps, AppState> {
 		// the root change of the subscript overrides the root change for a third column root with prefix
 		if (this.state.prefix || this.state.superscript) {
 			if (column === Column.THIRD) {
-				rootPhonetic = root.phoneticModifiedThirdColumn ? root.phoneticModifiedThirdColumn : root.phonetic;
+				rootPhonetic = root.phoneticModifiedThirdColumn
+					? root.phoneticModifiedThirdColumn
+					: root.phonetic;
 			}
 			if (column === Column.FOURTH) {
 				tone = Tone.HIGH;
@@ -259,6 +262,62 @@ class App extends Component<AppProps, AppState> {
 	};
 
 	render() {
+		const MENUS = [
+			// prefixes
+			{
+				active: Boolean(this.state.root),
+				handleChange: this.handleChange,
+				label: 'Prefix',
+				identifier: 'prefix',
+				value: this.state.prefix,
+				options: prefixes,
+			},
+			// superscripts
+			{
+				active: Boolean(this.state.root),
+				handleChange: this.handleChange,
+				label: 'Superscript',
+				identifier: 'superscript',
+				value: this.state.superscript,
+				options: superscripts,
+			},
+			// root characters menu
+			{
+				active: true,
+				handleChange: this.handleChange,
+				label: 'Root character',
+				identifier: 'root',
+				value: this.state.root,
+				options: Object.keys(roots),
+			},
+			// subscripts
+			{
+				active: this.state.availableSubscripts.length > 0,
+				handleChange: this.handleChange,
+				label: 'Subscript',
+				identifier: 'subscript',
+				value: this.state.subscript,
+				options: Object.keys(roots),
+			},
+			// suffixes
+			{
+				active: Boolean(this.state.root),
+				handleChange: this.handleChange,
+				label: 'Suffix 1',
+				identifier: 'suffix',
+				value: this.state.suffix,
+				options: suffixes,
+			},
+			// second suffixes
+			{
+				active: Boolean(this.state.suffix),
+				handleChange: this.handleChange,
+				label: 'Suffix 2',
+				identifier: 'secondSuffix',
+				value: this.state.secondSuffix,
+				options: secondSuffixes,
+			},
+		];
 		return (
 			<div className="container">
 				{/* tibetan display */}
@@ -267,185 +326,19 @@ class App extends Component<AppProps, AppState> {
 				</div>
 				{/* transliteration display */}
 				<div className="display--transliteration">{this.createPhoneticDisplay()}</div>
+				{/* character menus */}
 				<div className="options">
-					{/* prefixes menu */}
-					<div className="option">
-						<div
-							className={
-								this.state.root
-									? 'option__text'
-									: 'option__text option__text--inactive'
-							}
-						>
-							Prefix
-						</div>
-						<select
-							id="prefix"
-							className={
-								this.state.root
-									? 'option__select'
-									: 'option__select option__select--inactive'
-							}
-							name="prefix"
-							value={this.state.prefix}
-							onChange={this.handleChange}
-							disabled={!this.state.root}
-						>
-							<option></option>
-							{this.state.root &&
-								prefixes.map((prefix, index) => (
-									<option key={index} id={`prefix_${prefix}`}>
-										{prefix}
-									</option>
-								))}
-						</select>
-					</div>
-					{/* superscripts menu */}
-					<div className="option">
-						<div
-							className={
-								this.state.root
-									? 'option__text'
-									: 'option__text option__text--inactive'
-							}
-						>
-							Superscript
-						</div>
-						<select
-							id="superscript"
-							className={
-								this.state.root
-									? 'option__select'
-									: 'option__select option__select--inactive'
-							}
-							name="superscript"
-							value={this.state.superscript}
-							onChange={this.handleChange}
-							disabled={!this.state.root}
-						>
-							<option></option>
-							{this.state.root &&
-								superscripts.map((superscript, index) => (
-									<option key={index} id={`superscript_${superscript}`}>
-										{superscript}
-									</option>
-								))}
-						</select>
-					</div>
-					{/* root syllables menu */}
-					<div className="root option">
-						Root syllable
-						<select
-							id="root"
-							className="option__select"
-							name="root"
-							value={this.state.root}
-							onChange={this.handleChange}
-						>
-							<option></option>
-							{Object.keys(roots).map((rootSyllable, index) => (
-								<option key={index} id={`root_${rootSyllable}`}>
-									{rootSyllable}
-								</option>
-							))}
-						</select>
-					</div>
-					{/* subscripts menu */}
-					<div className="option">
-						<div
-							className={
-								this.state.availableSubscripts.length > 0
-									? 'option__text'
-									: 'option__text option__text--inactive'
-							}
-						>
-							Subscript
-						</div>
-						<select
-							id="subscript"
-							className={
-								this.state.availableSubscripts.length > 0
-									? 'option__select'
-									: 'option__select option__select--inactive'
-							}
-							name="subscript"
-							value={this.state.subscript}
-							onChange={this.handleChange}
-							disabled={!(this.state.availableSubscripts.length > 0)}
-						>
-							<option></option>
-							{this.state.root &&
-								this.state.availableSubscripts.map((subscript, index) => (
-									<option key={index} id={`subscript_${subscript}`}>
-										{subscript}
-									</option>
-								))}
-						</select>
-					</div>
-					{/* suffixes menu */}
-					<div className="option">
-						<div
-							className={
-								this.state.root
-									? 'option__text'
-									: 'option__text option__text--inactive'
-							}
-						>
-							Suffix 1
-						</div>
-						<select
-							id="suffix1"
-							className={
-								this.state.root
-									? 'option__select'
-									: 'option__select option__select--inactive'
-							}
-							name="suffix"
-							value={this.state.suffix}
-							onChange={this.handleChange}
-							disabled={!this.state.root}
-						>
-							<option></option>
-							{this.state.root &&
-								suffixes.map((suffix, index) => (
-									<option key={index} id={`suffix1_${suffix}`}>
-										{suffix}
-									</option>
-								))}
-						</select>
-					</div>
-					{/* second suffixes menu */}
-					<div className="option">
-						<div
-							className={
-								this.state.suffix
-									? 'option__text'
-									: 'option__text option__text--inactive'
-							}
-						>
-							Suffix 2
-						</div>
-						<select
-							id="suffix2"
-							className={
-								this.state.suffix
-									? 'option__select'
-									: 'option__select option__select--inactive'
-							}
-							name="secondSuffix"
-							value={this.state.secondSuffix}
-							onChange={this.handleChange}
-							disabled={!this.state.suffix}
-						>
-							<option></option>
-							{this.state.suffix &&
-								secondSuffixes.map((suffix, index) => (
-									<option key={index} id={`suffix2_${suffix}`}>
-										{suffix}
-									</option>
-								))}
-						</select>
-					</div>
+					{MENUS.map((m, i) => (
+						<TibetanCharacterMenu
+							key={`menu_${i}`}
+							active={m.active}
+							handleChange={m.handleChange}
+							label={m.label}
+							identifier={m.identifier}
+							value={m.value}
+							options={m.options}
+						/>
+					))}
 				</div>
 			</div>
 		);
