@@ -257,6 +257,8 @@ export const prefixes: string[] = ['ག', 'ད', 'བ', 'མ', 'འ'];
 
 export const suffixes: string[] = ['ག', 'ང', 'ད', 'ན', 'བ', 'མ', 'འ', 'ར', 'ལ', 'ས'];
 
+export const suffixesThatCauseVowelChange: string[] = ['ད', 'ན', 'ལ', 'ས'];
+
 export const secondSuffixes: string[] = ['ད', 'ས'];
 
 export const subscriptsTable: { [unicode: string]: string[] } = {

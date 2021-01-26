@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import TibetanCharacterMenu from './TibetanCharacterMenu';
 import {
-	superscripts,
 	prefixes,
+	superscripts,
 	roots,
-	suffixes,
-	secondSuffixes,
 	subscriptsTable,
+	suffixes,
+	suffixesThatCauseVowelChange,
+	secondSuffixes,
 	Column,
 	Tone,
 } from './tibetanUnicodeData';
@@ -146,8 +147,6 @@ class App extends Component<AppProps, AppState> {
 		let rootPhonetic = root.phonetic;
 		const column = roots[this.state.root].column;
 		let tone: Tone = Tone.NONE;
-
-		const rootsArray = Object.keys(roots);
 		let diairesis = false;
 		let suffix = '';
 
@@ -241,12 +240,7 @@ class App extends Component<AppProps, AppState> {
 		}
 
 		if (this.state.suffix) {
-			if (
-				this.state.suffix === 'ད' ||
-				this.state.suffix === 'ན' ||
-				this.state.suffix === 'ལ' ||
-				this.state.suffix === 'ས'
-			) {
+			if (suffixesThatCauseVowelChange.includes(this.state.suffix)) {
 				diairesis = true;
 			}
 			suffix = roots[this.state.suffix].phoneticAsSuffix || '';
@@ -297,7 +291,7 @@ class App extends Component<AppProps, AppState> {
 				label: 'Subscript',
 				identifier: 'subscript',
 				value: this.state.subscript,
-				options: Object.keys(roots),
+				options: this.state.availableSubscripts,
 			},
 			// suffixes
 			{

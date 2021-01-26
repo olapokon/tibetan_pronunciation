@@ -64,8 +64,8 @@ it('returns the correct result: with root sound change and diairesis', () => {
 	subscriptSelect.value = 'ར';
 	subscriptSelect.dispatchEvent(event);
 
-	// trigger suffix 1 change event - 'la'
-	const suffix1Select = container.querySelector('#suffix1');
+	// trigger suffix change event - 'la'
+	const suffix1Select = container.querySelector('#suffix');
 	suffix1Select.value = 'ལ';
 	suffix1Select.dispatchEvent(event);
 
