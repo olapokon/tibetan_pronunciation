@@ -10,11 +10,17 @@ import {
 	secondSuffixes,
 	Column,
 	Tone,
-} from './tibetanUnicodeData';
+} from './tibetanData';
 
 const DIAIRESIS_UNICODE_CODEPOINT = '\u0308';
 const HIGH_TONE_UNICODE_CODEPOINT = '\u0301';
 const LOW_TONE_UNICODE_CODEPOINT = '\u0300';
+
+interface TibetanSyllable {
+	rootPhonetic: string;
+	rootColumn: Column;
+	tone: Tone;
+}
 
 type AppProps = null;
 
@@ -164,79 +170,12 @@ class App extends Component<AppProps, AppState> {
 		}
 
 		if (this.state.subscript) {
-			switch (this.state.subscript) {
-				// ra subscript
-				case 'ར':
-					switch (this.state.root) {
-						case 'ཀ':
-						case 'ཏ':
-						case 'པ':
-							rootPhonetic = 'tra';
-							tone = Tone.HIGH;
-							break;
-						case 'ཁ':
-						case 'ཐ':
-						case 'ཕ':
-							rootPhonetic = 'thra';
-							tone = Tone.HIGH;
-							break;
-						case 'ག':
-						case 'ད':
-						case 'བ':
-							if (this.state.superscript === 'ས') {
-								rootPhonetic = 'dra';
-							} else {
-								rootPhonetic = 'thra';
-							}
-							tone = Tone.LOW;
-							break;
-						case 'ཧ':
-							rootPhonetic = 'hra';
-							break;
-						default:
-							break;
-					}
-					break;
-
-				// la subscript
-				case 'ལ':
-					if (this.state.root === 'ཟ') {
-						rootPhonetic = 'da';
-						tone = Tone.LOW;
-					} else {
-						rootPhonetic = 'la';
-						tone = Tone.HIGH;
-					}
-					break;
-
-				// ya subscript
-				case 'ཡ':
-					switch (this.state.root) {
-						case 'མ':
-							rootPhonetic = 'nya';
-							tone = Tone.LOW;
-							break;
-						case 'པ':
-							rootPhonetic = 'ca';
-							tone = Tone.HIGH;
-							break;
-						case 'ཕ':
-							rootPhonetic = 'cha';
-							tone = Tone.HIGH;
-							break;
-						case 'བ':
-							rootPhonetic = 'cha';
-							tone = Tone.LOW;
-							break;
-						default:
-							rootPhonetic = rootPhonetic.slice(0, -1) + 'ya';
-							break;
-					}
-					break;
-
-				default:
-					break;
-			}
+			[rootPhonetic, tone] = this.subscriptPhoneticChange(
+				this.state.subscript,
+				this.state.root,
+				this.state.superscript,
+				tone
+			);
 		}
 
 		if (this.state.suffix) {
@@ -254,6 +193,89 @@ class App extends Component<AppProps, AppState> {
 
 		return phoneticDisplay;
 	};
+
+	subscriptPhoneticChange(
+		subscript: string,
+		root: string,
+		superscript: string,
+		tone: Tone
+	): [string, Tone] {
+		let rootPhonetic = '';
+		switch (subscript) {
+			// ra subscript
+			case 'ར':
+				switch (root) {
+					case 'ཀ':
+					case 'ཏ':
+					case 'པ':
+						rootPhonetic = 'tra';
+						tone = Tone.HIGH;
+						break;
+					case 'ཁ':
+					case 'ཐ':
+					case 'ཕ':
+						rootPhonetic = 'thra';
+						tone = Tone.HIGH;
+						break;
+					case 'ག':
+					case 'ད':
+					case 'བ':
+						if (superscript === 'ས') {
+							rootPhonetic = 'dra';
+						} else {
+							rootPhonetic = 'thra';
+						}
+						tone = Tone.LOW;
+						break;
+					case 'ཧ':
+						rootPhonetic = 'hra';
+						break;
+					default:
+						break;
+				}
+				break;
+
+			// la subscript
+			case 'ལ':
+				if (root === 'ཟ') {
+					rootPhonetic = 'da';
+					tone = Tone.LOW;
+				} else {
+					rootPhonetic = 'la';
+					tone = Tone.HIGH;
+				}
+				break;
+
+			// ya subscript
+			case 'ཡ':
+				switch (root) {
+					case 'མ':
+						rootPhonetic = 'nya';
+						tone = Tone.LOW;
+						break;
+					case 'པ':
+						rootPhonetic = 'ca';
+						tone = Tone.HIGH;
+						break;
+					case 'ཕ':
+						rootPhonetic = 'cha';
+						tone = Tone.HIGH;
+						break;
+					case 'བ':
+						rootPhonetic = 'cha';
+						tone = Tone.LOW;
+						break;
+					default:
+						rootPhonetic = rootPhonetic.slice(0, -1) + 'ya';
+						break;
+				}
+				break;
+
+			default:
+				break;
+		}
+		return [rootPhonetic, tone];
+	}
 
 	render() {
 		const MENUS = [
