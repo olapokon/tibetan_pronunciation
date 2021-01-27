@@ -44,6 +44,27 @@ it('returns the correct result: with subscript', () => {
 	expect(tibetanDisplay.textContent).toEqual('ཏྲ');
 });
 
+// root: 'ག', subscript: 'ya': expected: 'khya'
+it('returns the correct result: with subscript', () => {
+	const event = document.createEvent('HTMLEvents');
+	event.initEvent('change', true, false);
+
+	// trigger root change event - 'ta'
+	const rootSelect = container.querySelector('#root');
+	rootSelect.value = 'ག';
+	rootSelect.dispatchEvent(event);
+
+	// trigger subscript change event - 'ra'
+	const subscriptSelect = container.querySelector('#subscript');
+	subscriptSelect.value = 'ཡ';
+	subscriptSelect.dispatchEvent(event);
+
+	const transliterationDisplay = container.querySelector('.display--transliteration');
+	const tibetanDisplay = container.querySelector('.display--tibetan');
+	expect(transliterationDisplay.textContent).toEqual('khya');
+	expect(tibetanDisplay.textContent).toEqual('གྱ');
+});
+
 // root: 'kha', superscript: 'sa', subscript: 'ra', suffix 1: 'la': expected: 'drä̀l'
 it('returns the correct result: with root sound change and diairesis', () => {
 	const event = document.createEvent('HTMLEvents');

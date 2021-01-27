@@ -162,6 +162,7 @@ class App extends Component<AppProps, AppState> {
 			[rootPhonetic, tone] = this.subscriptPhoneticChange(
 				this.state.subscript,
 				this.state.root,
+				rootPhonetic,
 				this.state.superscript,
 				tone
 			);
@@ -186,10 +187,10 @@ class App extends Component<AppProps, AppState> {
 	subscriptPhoneticChange(
 		subscript: string,
 		root: string,
+		rootPhonetic: string,
 		superscript: string,
 		tone: Tone
 	): [string, Tone] {
-		let rootPhonetic = '';
 		switch (subscript) {
 			// ra subscript
 			case 'ར':
