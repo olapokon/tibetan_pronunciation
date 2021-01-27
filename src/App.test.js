@@ -37,7 +37,7 @@ function getTextContent(identifier) {
 
 it('renders without crashing', () => {});
 
-it('returns the correct result: with subscript', () => {
+it('returns the correct result: with subscript "ra"', () => {
 	triggerSelectChangeEvent('#root', 'ཏ');
 	triggerSelectChangeEvent('#subscript', 'ར');
 
@@ -45,7 +45,7 @@ it('returns the correct result: with subscript', () => {
 	expect(getTextContent('.display--tibetan')).toEqual('ཏྲ');
 });
 
-it('returns the correct result: with subscript', () => {
+it('returns the correct result: with subscript "ya"', () => {
 	triggerSelectChangeEvent('#root', 'ག');
 	triggerSelectChangeEvent('#subscript', 'ཡ');
 
