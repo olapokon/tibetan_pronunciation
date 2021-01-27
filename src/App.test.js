@@ -21,77 +21,44 @@ afterEach(() => {
 	container = null;
 });
 
+function triggerSelectChangeEvent(identifier, value) {
+	const event = document.createEvent('HTMLEvents');
+	event.initEvent('change', true, false);
+
+	const selectElement = container.querySelector(identifier);
+	selectElement.value = value;
+	selectElement.dispatchEvent(event);
+}
+
+function getTextContent(identifier) {
+	const el = container.querySelector(identifier);
+	return el.textContent;
+}
+
 it('renders without crashing', () => {});
 
-// root: 'ta', subscript: 'ra': expected: 'trá'
 it('returns the correct result: with subscript', () => {
-	const event = document.createEvent('HTMLEvents');
-	event.initEvent('change', true, false);
+	triggerSelectChangeEvent('#root', 'ཏ');
+	triggerSelectChangeEvent('#subscript', 'ར');
 
-	// trigger root change event - 'ta'
-	const rootSelect = container.querySelector('#root');
-	rootSelect.value = 'ཏ';
-	rootSelect.dispatchEvent(event);
-
-	// trigger subscript change event - 'ra'
-	const subscriptSelect = container.querySelector('#subscript');
-	subscriptSelect.value = 'ར';
-	subscriptSelect.dispatchEvent(event);
-
-	const transliterationDisplay = container.querySelector('.display--transliteration');
-	const tibetanDisplay = container.querySelector('.display--tibetan');
-	expect(transliterationDisplay.textContent).toEqual('trá');
-	expect(tibetanDisplay.textContent).toEqual('ཏྲ');
+	expect(getTextContent('.display--transliteration')).toEqual('trá');
+	expect(getTextContent('.display--tibetan')).toEqual('ཏྲ');
 });
 
-// root: 'ག', subscript: 'ya': expected: 'khya'
 it('returns the correct result: with subscript', () => {
-	const event = document.createEvent('HTMLEvents');
-	event.initEvent('change', true, false);
+	triggerSelectChangeEvent('#root', 'ག');
+	triggerSelectChangeEvent('#subscript', 'ཡ');
 
-	// trigger root change event - 'ta'
-	const rootSelect = container.querySelector('#root');
-	rootSelect.value = 'ག';
-	rootSelect.dispatchEvent(event);
-
-	// trigger subscript change event - 'ra'
-	const subscriptSelect = container.querySelector('#subscript');
-	subscriptSelect.value = 'ཡ';
-	subscriptSelect.dispatchEvent(event);
-
-	const transliterationDisplay = container.querySelector('.display--transliteration');
-	const tibetanDisplay = container.querySelector('.display--tibetan');
-	expect(transliterationDisplay.textContent).toEqual('khya');
-	expect(tibetanDisplay.textContent).toEqual('གྱ');
+	expect(getTextContent('.display--transliteration')).toEqual('khya');
+	expect(getTextContent('.display--tibetan')).toEqual('གྱ');
 });
 
-// root: 'kha', superscript: 'sa', subscript: 'ra', suffix 1: 'la': expected: 'drä̀l'
 it('returns the correct result: with root sound change and diairesis', () => {
-	const event = document.createEvent('HTMLEvents');
-	event.initEvent('change', true, false);
+	triggerSelectChangeEvent('#root', 'ག');
+	triggerSelectChangeEvent('#superscript', 'ས');
+	triggerSelectChangeEvent('#subscript', 'ར');
+	triggerSelectChangeEvent('#suffix', 'ལ');
 
-	// trigger root change event - 'kha'
-	const rootSelect = container.querySelector('#root');
-	rootSelect.value = 'ག';
-	rootSelect.dispatchEvent(event);
-
-	// trigger superscript change event - 'sa'
-	const superscriptSelect = container.querySelector('#superscript');
-	superscriptSelect.value = 'ས';
-	superscriptSelect.dispatchEvent(event);
-
-	// trigger subscript change event - 'ra'
-	const subscriptSelect = container.querySelector('#subscript');
-	subscriptSelect.value = 'ར';
-	subscriptSelect.dispatchEvent(event);
-
-	// trigger suffix change event - 'la'
-	const suffix1Select = container.querySelector('#suffix');
-	suffix1Select.value = 'ལ';
-	suffix1Select.dispatchEvent(event);
-
-	const transliterationDisplay = container.querySelector('.display--transliteration');
-	const tibetanDisplay = container.querySelector('.display--tibetan');
-	expect(transliterationDisplay.textContent).toEqual('drä̀l');
-	expect(tibetanDisplay.textContent).toEqual('སྒྲལ');
+	expect(getTextContent('.display--transliteration')).toEqual('drä̀l');
+	expect(getTextContent('.display--tibetan')).toEqual('སྒྲལ');
 });
