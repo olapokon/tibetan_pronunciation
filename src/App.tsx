@@ -16,12 +16,6 @@ const DIAIRESIS_UNICODE_CODEPOINT = '\u0308';
 const HIGH_TONE_UNICODE_CODEPOINT = '\u0301';
 const LOW_TONE_UNICODE_CODEPOINT = '\u0300';
 
-interface TibetanSyllable {
-	rootPhonetic: string;
-	rootColumn: Column;
-	tone: Tone;
-}
-
 type AppProps = null;
 
 interface AppState {
@@ -67,10 +61,7 @@ class App extends Component<AppProps, AppState> {
 				// the la subscript cannot be displayed if there is a superscript
 				// remove la from the subscripts menu if a superscript is selected and clear current subscript
 				if (value) {
-					const prunedSubscripts = [...this.state.availableSubscripts];
-					if (prunedSubscripts.includes('ལ')) {
-						prunedSubscripts.splice(prunedSubscripts.indexOf('ལ'), 1);
-					}
+					const prunedSubscripts = this.state.availableSubscripts.filter((s) => s !== 'ལ');
 					this.setState({
 						...this.state,
 						[name]: value,
@@ -128,9 +119,7 @@ class App extends Component<AppProps, AppState> {
 			return 'ཨ';
 		}
 		const prefix = this.state.prefix ? roots[this.state.prefix].unicodeCodePoint : '';
-		const superscript = this.state.superscript
-			? roots[this.state.superscript].unicodeCodePoint
-			: '';
+		const superscript = this.state.superscript ? roots[this.state.superscript].unicodeCodePoint : '';
 		const subscript = this.state.subscript
 			? roots[this.state.subscript].unicodeCodePointAsSubscript
 			: '';
