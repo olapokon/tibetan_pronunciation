@@ -37,7 +37,6 @@ const initialState: AppState = {
 };
 
 enum AppStateActionType {
-	CLEAR_STATE,
 	UPDATE_PREFIX,
 	UPDATE_SUPERSCRIPT,
 	UPDATE_ROOT,
@@ -53,8 +52,6 @@ interface AppStateAction {
 
 function reducer(state: AppState, action: AppStateAction): AppState {
 	switch (action.type) {
-		case AppStateActionType.CLEAR_STATE:
-			return initialState;
 		case AppStateActionType.UPDATE_PREFIX:
 			return {
 				...state,
@@ -117,7 +114,7 @@ function reducer(state: AppState, action: AppStateAction): AppState {
 function App() {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+	function handleChange(event: React.ChangeEvent<HTMLSelectElement>): void {
 		const { name, value } = event.target;
 		switch (name) {
 			case 'prefix':
@@ -161,7 +158,7 @@ function App() {
 		}
 	};
 
-	const createTibetanDisplay = (): string => {
+	function createTibetanDisplay(): string {
 		if (!state.root) {
 			return 'ཨ';
 		}
@@ -176,7 +173,7 @@ function App() {
 		return `${prefix}${superscript}${root}${subscript}${suffix}${secondSuffix}`;
 	};
 
-	const createPhoneticDisplay = (): string => {
+	function createPhoneticDisplay(): string {
 		if (!state.root || !roots[state.root]) {
 			return '';
 		}
