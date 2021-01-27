@@ -114,49 +114,32 @@ function reducer(state: AppState, action: AppStateAction): AppState {
 function App() {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
+	function dispatchAction(actionType: AppStateActionType, actionValue: string): void {
+		dispatch({
+			type: actionType,
+			payload: actionValue,
+		});
+	}
+
 	function handleChange(event: React.ChangeEvent<HTMLSelectElement>): void {
 		const { name, value } = event.target;
 		switch (name) {
 			case 'prefix':
-				dispatch({
-					type: AppStateActionType.UPDATE_PREFIX,
-					payload: value,
-				});
-				break;
+				return dispatchAction(AppStateActionType.UPDATE_PREFIX, value);
 			case 'superscript':
-				dispatch({
-					type: AppStateActionType.UPDATE_SUPERSCRIPT,
-					payload: value,
-				});
-				break;
+				return dispatchAction(AppStateActionType.UPDATE_SUPERSCRIPT, value);
 			case 'root':
-				dispatch({
-					type: AppStateActionType.UPDATE_ROOT,
-					payload: value,
-				});
-				break;
+				return dispatchAction(AppStateActionType.UPDATE_ROOT, value);
 			case 'subscript':
-				dispatch({
-					type: AppStateActionType.UPDATE_SUBSCRIPT,
-					payload: value,
-				});
-				break;
+				return dispatchAction(AppStateActionType.UPDATE_SUBSCRIPT, value);
 			case 'suffix':
-				dispatch({
-					type: AppStateActionType.UPDATE_SUFFIX,
-					payload: value,
-				});
-				break;
+				return dispatchAction(AppStateActionType.UPDATE_SUFFIX, value);
 			case 'secondSuffix':
-				dispatch({
-					type: AppStateActionType.UPDATE_SECOND_SUFFIX,
-					payload: value,
-				});
-				break;
+				return dispatchAction(AppStateActionType.UPDATE_SECOND_SUFFIX, value);
 			default:
-				break;
+				return;
 		}
-	};
+	}
 
 	function createTibetanDisplay(): string {
 		if (!state.root) {
@@ -171,7 +154,7 @@ function App() {
 			? roots[state.root].unicodeCodePointAsSubscript
 			: roots[state.root].unicodeCodePoint;
 		return `${prefix}${superscript}${root}${subscript}${suffix}${secondSuffix}`;
-	};
+	}
 
 	function createPhoneticDisplay(): string {
 		if (!state.root || !roots[state.root]) {
@@ -222,7 +205,7 @@ function App() {
 		phoneticDisplay += suffix;
 
 		return phoneticDisplay;
-	};
+	}
 
 	function subscriptPhoneticChange(
 		subscript: string,
